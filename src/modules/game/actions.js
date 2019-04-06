@@ -1,18 +1,16 @@
 import * as types from '../../constants/actionTypes';
 
-const initialState = {
-    newGame= true
-  }
+export const startGame = playerName => {
+  return {
+    type: types.START_GAME,
+    payload: {
+      playerName
+    }
+  };
 };
 
-export default {
-  gameReducer: (state = initialState, action) => {
-    switch (action.type) {
-      case types.START_GAME:
-        return { ...state, newGame: false };
-
-      default:
-        return state;
-    }
-  }
+export const restartGame = () => {
+  return {
+    type: types.RESTART_GAME
+  };
 };

@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Board from '../../board/components/Board';
+import PlayerForm from '../../board/components/PlayerForm';
+import ShipSelection from '../../board/components/ShipsSelection';
+import { startGame } from '../../game/actions';
 
 const TitleContainer = styled.div`
   margin-top: 3%;
@@ -11,38 +14,42 @@ const TitleContainer = styled.div`
   }
 `;
 
-const PlayerFormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 5%;
-  @media (min-width: 992px) {
-    align-items: flex-start;
-  }
-`;
-
 class DashBoard extends Component {
   state = {
-    playerName: '',
+    name: '',
     validForm: true
   };
 
   handleChangePlayerName = e => {
-    this.setState({ playerName: e.target.value, validForm: true });
+    this.setState({ name: e.target.value, validForm: true });
   };
 
   handleSubmitStartGame = e => {
     e.preventDefault();
-    if (!this.state.playerName) {
+    if (!this.state.name) {
       this.setState({ validForm: false });
     } else {
-      this.setState({ validForm: true });
+      this.props.startGame(this.state.name);
     }
   };
 
   render() {
-    const { playerName, validForm } = this.state;
+    const { name, validForm } = this.state;
+    const { playerName } = this.props;
+
+    const renderRightSideContent = () => {
+      if (!playerName) {
+        return (
+          <PlayerForm
+            name={name}
+            validForm={validForm}
+            handleChangePlayerName={this.handleChangePlayerName}
+            handleSubmitStartGame={this.handleSubmitStartGame}
+          />
+        );
+      }
+      return <ShipSelection playerName={playerName} />;
+    };
 
     return (
       <React.Fragment>
@@ -55,35 +62,20 @@ class DashBoard extends Component {
           <div className="col-12 col-lg-6 d-flex justify-content-center">
             <Board />
           </div>
-
-          <PlayerFormContainer className="col-12 col-lg-6">
-            <form onSubmit={this.handleSubmitStartGame}>
-              <div className="form-group pl-0">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter your name"
-                  value={playerName}
-                  onChange={this.handleChangePlayerName}
-                />
-                {!validForm ? (
-                  <p className="text-danger">
-                    {' '}
-                    You must to enter your name to play.{' '}
-                  </p>
-                ) : (
-                  ''
-                )}
-              </div>
-              <button type="submit" className="btn btn-outline-primary">
-                START GAME
-              </button>
-            </form>
-          </PlayerFormContainer>
+          {renderRightSideContent()}
         </div>
       </React.Fragment>
     );
   }
 }
 
-export default DashBoard;
+const mapStateToProps = state => {
+  return {
+    playerName: state.gameReducer.playerName
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { startGame }
+)(DashBoard);
