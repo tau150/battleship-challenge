@@ -1,26 +1,35 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import _ from 'lodash';
 import Row from './Row';
+import Cell from './Cell';
 import { highlightPossibleSelection, setShipPosition } from '../actions';
 
 const StyledDiv = styled.div`
-  display: inline-block;
+  display: flex;
   border: 1.5px solid #777;
+  flex-wrap: wrap;
+  width: 203px;
+
+  @media (min-width: 992px) {
+    width: 406px;
+  }
 `;
 class Board extends Component {
   handleHoverToSetShip = coordinates => {
     const { selectedShip } = this.props;
     if (selectedShip) {
-      const cells = [];
+      const cellsToHighlight = [];
       const { xCoordinate, yCoordinate } = coordinates;
 
+      const availableCells = this.props.cells.filter(cell => cell.isAvailable);
+      console.log(availableCells);
       const makeCoordinatesObject = extension => {
-        console.log(selectedShip.direction);
         if (selectedShip.direction === 'horizontal') {
           if (Number(yCoordinate) + extension <= 10) {
             for (let i = 0; i < extension; i += 1) {
-              cells.push({
+              cellsToHighlight.push({
                 xCoordinate: Number(xCoordinate),
                 yCoordinate: Number(yCoordinate) + i
               });
@@ -29,7 +38,7 @@ class Board extends Component {
         } else if (selectedShip.direction === 'vertical') {
           if (Number(xCoordinate) + extension <= 10) {
             for (let i = 0; i < extension; i += 1) {
-              cells.push({
+              cellsToHighlight.push({
                 xCoordinate: Number(xCoordinate) + i,
                 yCoordinate: Number(yCoordinate)
               });
@@ -46,35 +55,61 @@ class Board extends Component {
         makeCoordinatesObject(2);
       }
 
-      this.props.highlightPossibleSelection(cells);
+      this.props.highlightPossibleSelection(cellsToHighlight, this.props.cells);
     }
   };
 
   handleSetShipPosition = () => {
-    if (this.props.highlightedCells && this.props.highlightedCells.length > 0) {
+    if (
+      this.props.highlightedCells &&
+      this.props.highlightedCells.length > 0 &&
+      this.props.selectedShip
+    ) {
       this.props.setShipPosition(
         this.props.ships,
         this.props.selectedShip,
-        this.props.highlightedCells
+        this.props.highlightedCells,
+        this.props.cells
       );
     }
   };
 
   render() {
-    const renderRows = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
-      position => (
-        <Row
-          highlightedCells={this.props.highlightedCells}
-          handleHoverToSetShip={this.handleHoverToSetShip}
-          key={position}
-          handleSetShipPosition={this.handleSetShipPosition}
-          rowIndex={position}
-          stage={this.props.stage}
-        />
-      )
-    );
+    // const shipsOcupation = this.props.ships.map(ship => {
+    //   return _.pick(ship, ['position']);
+    // });
 
-    return <StyledDiv> {renderRows} </StyledDiv>;
+    // const renderRows = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
+    //   position => (
+    //     <Row
+    //       // highlightedCells={this.props.highlightedCells}
+    //       handleHoverToSetShip={this.handleHoverToSetShip}
+    //       key={position}
+    //       handleSetShipPosition={this.handleSetShipPosition}
+    //       rowIndex={position}
+    //       stage={this.props.stage}
+    //     />
+    //   )
+    // );
+
+    const renderCells = () => {
+      return this.props.cells.map(cell => {
+        return (
+          <Cell
+            key={cell.id}
+            handleHoverToSetShip={this.handleHoverToSetShip}
+            handleSetShipPosition={this.handleSetShipPosition}
+            xCoordinate={cell.xCoordinate}
+            yCoordinate={cell.yCoordinate}
+            type={cell.type}
+            highlighted={cell.highlighted}
+            available={cell.available}
+          />
+        );
+      });
+    };
+
+    return <StyledDiv> {renderCells()} </StyledDiv>;
   }
 }
 
@@ -83,7 +118,8 @@ const mapStateToProps = state => {
     selectedShip: state.boardReducer.selectedShip,
     ships: state.boardReducer.ships,
     highlightedCells: state.boardReducer.highlightedCells,
-    stage: state.gameReducer.stage
+    stage: state.gameReducer.stage,
+    cells: state.boardReducer.cells
   };
 };
 

@@ -18,10 +18,6 @@ const SyledH2 = styled.h2`
 `;
 
 class ShipSelection extends Component {
-  state = {
-    direction: 'horizontal'
-  };
-
   componentDidMount() {
     this.props.initShips();
   }
@@ -30,29 +26,19 @@ class ShipSelection extends Component {
     this.props.selectShip(ship);
   };
 
-  // handleRotateShip = () => {
-  //   if (this.state.direction === 'horizontal') {
-  //     this.setState({ direction: 'vertial' });
-  //     const ship = this.props.selectedShip;
-  //     ship.direction = 'vertical';
-  //     this.props.selectShip(ship);
-  //   } else {
-  //     this.setState({ direction: 'horizontal' });
-  //     const ship = this.props.selectedShip;
-  //     ship.direction = 'horizontal';
-  //     this.props.selectShip(ship);
-  //   }
-  // };
-
   handleRotateShip = () => {
-    this.props.rotateShip(this.props.selectedShip, this.state.direction);
+    this.props.rotateShip(this.props.selectedShip);
   };
 
   render() {
     const { playerName, ships, selectedShip } = this.props;
 
+    const filteredShips = ships.filter(ship => {
+      return ship.position === null;
+    });
+
     const renderShips = () => {
-      return ships.map(ship => {
+      return filteredShips.map(ship => {
         return (
           <Ship
             handleSelectShip={this.handleSelectShip}
@@ -76,14 +62,24 @@ class ShipSelection extends Component {
         </div>
         <div>{renderShips()}</div>
         <div>
-          <button
-            onClick={this.handleRotateShip}
-            type="button"
-            disabled={!selectedShip ? 'disabled' : ''}
-            className="btn btn-outline-primary mt-5"
-          >
-            ROTATE SHIP
-          </button>
+          {filteredShips.length === 0 ? (
+            <button
+              onClick={this.handleRotateShip}
+              type="button"
+              className="btn btn-outline-primary mt-5"
+            >
+              START BATTLE
+            </button>
+          ) : (
+            <button
+              onClick={this.handleRotateShip}
+              type="button"
+              disabled={!selectedShip ? 'disabled' : ''}
+              className="btn btn-outline-primary mt-5"
+            >
+              ROTATE SHIP
+            </button>
+          )}
         </div>
       </div>
     );

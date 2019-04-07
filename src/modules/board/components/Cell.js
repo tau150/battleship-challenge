@@ -9,7 +9,9 @@ const StyledDiv = styled.div`
   cursor: pointer;
 
   background: ${({ highlighted }) => (highlighted ? 'var(--secondary)' : '')};
-
+  background: ${({ type }) => (type === 'Submarine' ? '#0B3861' : '')};
+  background: ${({ type }) => (type === 'Cruisers' ? 'var(--primary) ' : '')};
+  background: ${({ type }) => (type === 'Carrier' ? '#2ECCFA' : '')};
   @media (min-width: 992px) {
     width: 40px;
     height: 40px;
@@ -19,12 +21,16 @@ const StyledDiv = styled.div`
 const Cell = ({
   highlighted,
   handleHoverToSetShip,
+  available,
+  type,
   yCoordinate,
   xCoordinate,
   handleSetShipPosition
 }) => {
   return (
     <StyledDiv
+      type={type}
+      available={available}
       highlighted={highlighted}
       onClick={handleSetShipPosition}
       onFocus={() => handleHoverToSetShip({ xCoordinate, yCoordinate })}
