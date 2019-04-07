@@ -14,6 +14,7 @@ const StyledDiv = styled.div`
   p {
     margin-bottom: 0;
     margin-left: 2%;
+    font-weight: ${({ wasSelected }) => (wasSelected ? '700' : '')};
   }
 
   @media (min-width: 992px) {
@@ -21,7 +22,7 @@ const StyledDiv = styled.div`
     margin-top: 15px;
 
     i {
-      font-size: 2rem;
+      font-size: ${({ wasSelected }) => (wasSelected ? '2.3rem' : '2rem')};
     }
 
     p {
@@ -30,9 +31,14 @@ const StyledDiv = styled.div`
   }
 `;
 
-const Ship = ({ type, id, handleSelectShip }) => {
+const Ship = ({ type, id, handleSelectShip, direction, wasSelected }) => {
   return (
-    <StyledDiv id={id} type={type} onClick={handleSelectShip}>
+    <StyledDiv
+      id={id}
+      type={type}
+      wasSelected={wasSelected}
+      onClick={() => handleSelectShip({ id, type, direction })}
+    >
       <i className="fa fa-ship" aria-hidden="true" />
       <p>{type}</p>
     </StyledDiv>

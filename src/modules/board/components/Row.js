@@ -9,11 +9,35 @@ const StyledDiv = styled.div`
   flex-wrap: nowrap;
 `;
 
-const Row = ({ rowIndex }) => {
+const Row = ({
+  rowIndex,
+  handleHoverToSetShip,
+  highlightedCells,
+  handleSetShipPosition
+}) => {
   const renderRow = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
     position => {
+      const highLight = () => {
+        if (highlightedCells) {
+          const result = highlightedCells.some(highlightedCell => {
+            return (
+              Number(highlightedCell.xCoordinate) === Number(rowIndex) &&
+              Number(highlightedCell.yCoordinate) === Number(position)
+            );
+          });
+
+          return result;
+        }
+      };
       return (
-        <Cell key={position} y-coordinate={rowIndex} x-coordinate={position} />
+        <Cell
+          handleHoverToSetShip={handleHoverToSetShip}
+          key={position}
+          xCoordinate={rowIndex}
+          highlighted={highLight()}
+          handleSetShipPosition={handleSetShipPosition}
+          yCoordinate={position}
+        />
       );
     }
   );

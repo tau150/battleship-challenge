@@ -42,13 +42,22 @@ const initialState = {
       position: null,
       hits: null
     }
-  ]
+  ],
+
+  selectedShip: null,
+  highlightedCells: null
 };
 
 const boardReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.INIT_SHIPS:
       return { ...state };
+
+    case types.SELECT_SHIP:
+      return { ...state, selectedShip: action.payload.ship };
+
+    case types.HIGHLIGHT_POSSIBLE_SELECTION:
+      return { ...state, highlightedCells: action.payload.cells };
 
     default:
       return state;
