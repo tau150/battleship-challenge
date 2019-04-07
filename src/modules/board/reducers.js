@@ -8,7 +8,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null
+      hits: null,
+      direction: 'horizontal'
     },
     {
       type: 'Cruisers',
@@ -16,7 +17,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null
+      hits: null,
+      direction: 'horizontal'
     },
     {
       type: 'Cruisers',
@@ -24,7 +26,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null
+      hits: null,
+      direction: 'horizontal'
     },
     {
       type: 'Cruisers',
@@ -32,7 +35,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null
+      hits: null,
+      direction: 'horizontal'
     },
     {
       type: 'Submarine',
@@ -40,7 +44,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null
+      hits: null,
+      direction: 'horizontal'
     }
   ],
 
@@ -54,6 +59,7 @@ const boardReducer = (state = initialState, action) => {
       return { ...state };
 
     case types.SELECT_SHIP:
+      console.log(action.payload.ship);
       return { ...state, selectedShip: action.payload.ship };
 
     case types.HIGHLIGHT_POSSIBLE_SELECTION:

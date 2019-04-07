@@ -13,16 +13,27 @@ class Board extends Component {
     const { selectedShip } = this.props;
     if (selectedShip) {
       const cells = [];
-
       const { xCoordinate, yCoordinate } = coordinates;
 
       const makeCoordinatesObject = extension => {
-        if (Number(yCoordinate) + extension <= 10) {
-          for (let i = 0; i < extension; i += 1) {
-            cells.push({
-              xCoordinate: Number(xCoordinate),
-              yCoordinate: Number(yCoordinate) + i
-            });
+        console.log(selectedShip.direction);
+        if (selectedShip.direction === 'horizontal') {
+          if (Number(yCoordinate) + extension <= 10) {
+            for (let i = 0; i < extension; i += 1) {
+              cells.push({
+                xCoordinate: Number(xCoordinate),
+                yCoordinate: Number(yCoordinate) + i
+              });
+            }
+          }
+        } else if (selectedShip.direction === 'vertical') {
+          if (Number(xCoordinate) + extension <= 10) {
+            for (let i = 0; i < extension; i += 1) {
+              cells.push({
+                xCoordinate: Number(xCoordinate) + i,
+                yCoordinate: Number(yCoordinate)
+              });
+            }
           }
         }
       };

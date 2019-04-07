@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Ship from './Ship';
-import { initShips, selectShip } from '../actions';
+import { initShips, selectShip, rotateShip } from '../actions';
 
 const SyledH2 = styled.h2`
   color: var(--gray);
@@ -30,17 +30,26 @@ class ShipSelection extends Component {
     this.props.selectShip(ship);
   };
 
+  // handleRotateShip = () => {
+  //   if (this.state.direction === 'horizontal') {
+  //     this.setState({ direction: 'vertial' });
+  //     const ship = this.props.selectedShip;
+  //     ship.direction = 'vertical';
+  //     this.props.selectShip(ship);
+  //   } else {
+  //     this.setState({ direction: 'horizontal' });
+  //     const ship = this.props.selectedShip;
+  //     ship.direction = 'horizontal';
+  //     this.props.selectShip(ship);
+  //   }
+  // };
+
   handleRotateShip = () => {
-    if (this.state.direction === 'horizontal') {
-      this.setState({ direction: 'vertial' });
-    } else {
-      this.setState({ direction: 'horizontal' });
-    }
+    this.props.rotateShip(this.props.selectedShip, this.state.direction);
   };
 
   render() {
     const { playerName, ships, selectedShip } = this.props;
-    const { direction } = this.state;
 
     const renderShips = () => {
       return ships.map(ship => {
@@ -49,8 +58,8 @@ class ShipSelection extends Component {
             handleSelectShip={this.handleSelectShip}
             key={ship.id}
             type={ship.type}
-            direction={direction}
             id={ship.id}
+            direction={ship.direction}
             wasSelected={!!(selectedShip && selectedShip.id === ship.id)}
             position={ship.position}
           />
@@ -90,5 +99,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { initShips, selectShip }
+  { initShips, selectShip, rotateShip }
 )(ShipSelection);

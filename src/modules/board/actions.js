@@ -15,6 +15,23 @@ export const selectShip = ship => {
   };
 };
 
+export const rotateShip = (ship, direction) => {
+  const newShip = ship;
+
+  if (ship.direction === 'horizontal') {
+    newShip.direction = 'vertical';
+  } else {
+    newShip.direction = 'horizontal';
+  }
+
+  return {
+    type: types.SELECT_SHIP,
+    payload: {
+      ship: newShip
+    }
+  };
+};
+
 export const highlightPossibleSelection = cells => {
   return {
     type: types.HIGHLIGHT_POSSIBLE_SELECTION,
@@ -26,9 +43,10 @@ export const highlightPossibleSelection = cells => {
 
 export const setShipPosition = (ships, selectedShip, positions) => {
   console.log(ships, selectedShip, positions);
+  const shipss = ships;
+
   const newShips = ships.map(ship => {
     if (ship.id === selectShip.id) {
-      ship.positions = positions;
     }
 
     return ship;
