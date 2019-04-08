@@ -48,6 +48,9 @@ class DashBoard extends Component {
           />
         );
       }
+      if (this.props.stage === 'battle') {
+        return <Board />;
+      }
       return <ShipSelection playerName={playerName} />;
     };
 
@@ -62,7 +65,7 @@ class DashBoard extends Component {
           <div className="col-12 col-lg-6 d-flex justify-content-center">
             <Board owner="user" />
           </div>
-          {renderRightSideContent()}
+          <div className="col-12 col-lg-6">{renderRightSideContent()}</div>
         </div>
       </React.Fragment>
     );
@@ -71,7 +74,8 @@ class DashBoard extends Component {
 
 const mapStateToProps = state => {
   return {
-    playerName: state.gameReducer.playerName
+    playerName: state.gameReducer.playerName,
+    stage: state.gameReducer.stage
   };
 };
 

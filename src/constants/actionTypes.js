@@ -1,5 +1,6 @@
 export const START_GAME = 'START_GAME';
 export const RESTART_GAME = 'RESTART_GAME';
+export const START_BATTLE = 'START_BATTLE';
 
 export const INIT_SHIPS = 'INIT_SHIPS';
 export const SELECT_SHIP = 'SELECT_SHIP';

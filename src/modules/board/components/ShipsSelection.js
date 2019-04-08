@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Ship from './Ship';
 import { initShips, selectShip, rotateShip } from '../actions';
+import { startBattle } from '../../game/actions';
 
 const SyledH2 = styled.h2`
   color: var(--gray);
@@ -28,6 +29,11 @@ class ShipSelection extends Component {
 
   handleRotateShip = () => {
     this.props.rotateShip(this.props.selectedShip);
+  };
+
+  handleStartBattle = () => {
+    console.log('habdle');
+    this.props.startBattle();
   };
 
   render() {
@@ -64,7 +70,7 @@ class ShipSelection extends Component {
         <div>
           {filteredShips.length === 0 ? (
             <button
-              onClick={this.handleRotateShip}
+              onClick={this.handleStartBattle}
               type="button"
               className="btn btn-outline-primary mt-5"
             >
@@ -95,5 +101,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { initShips, selectShip, rotateShip }
+  { initShips, selectShip, rotateShip, startBattle }
 )(ShipSelection);

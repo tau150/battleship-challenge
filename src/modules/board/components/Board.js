@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import _ from 'lodash';
-import Row from './Row';
 import Cell from './Cell';
 import { highlightPossibleSelection, setShipPosition } from '../actions';
 
@@ -23,8 +22,9 @@ class Board extends Component {
       const cellsToHighlight = [];
       const { xCoordinate, yCoordinate } = coordinates;
 
-      const availableCells = this.props.cells.filter(cell => cell.isAvailable);
-      console.log(availableCells);
+      const notAvailableCells = this.props.cells.filter(
+        cell => !cell.isAvailable
+      );
       const makeCoordinatesObject = extension => {
         if (selectedShip.direction === 'horizontal') {
           if (Number(yCoordinate) + extension <= 10) {
@@ -55,6 +55,24 @@ class Board extends Component {
         makeCoordinatesObject(2);
       }
 
+      const coordinatesOfNotAvailableCells = notAvailableCells.map(cell =>
+        _.pick(cell, ['xCoordinate', 'yCoordinate'])
+      );
+
+      let isPossibleMatch = true;
+
+      coordinatesOfNotAvailableCells.forEach(cell => {
+        cellsToHighlight.forEach(highLightedCell => {
+          if (
+            cell.xCoordinate === highLightedCell.xCoordinate &&
+            cell.yCoordinate === highLightedCell.yCoordinate
+          )
+            isPossibleMatch = false;
+        });
+      });
+
+      if (!isPossibleMatch) return;
+
       this.props.highlightPossibleSelection(cellsToHighlight, this.props.cells);
     }
   };
@@ -75,23 +93,6 @@ class Board extends Component {
   };
 
   render() {
-    // const shipsOcupation = this.props.ships.map(ship => {
-    //   return _.pick(ship, ['position']);
-    // });
-
-    // const renderRows = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
-    //   position => (
-    //     <Row
-    //       // highlightedCells={this.props.highlightedCells}
-    //       handleHoverToSetShip={this.handleHoverToSetShip}
-    //       key={position}
-    //       handleSetShipPosition={this.handleSetShipPosition}
-    //       rowIndex={position}
-    //       stage={this.props.stage}
-    //     />
-    //   )
-    // );
-
     const renderCells = () => {
       return this.props.cells.map(cell => {
         return (
