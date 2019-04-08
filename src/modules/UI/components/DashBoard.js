@@ -49,7 +49,7 @@ class DashBoard extends Component {
         );
       }
       if (this.props.stage === 'battle') {
-        return <Board />;
+        return <Board owner="cpu" />;
       }
       return <ShipSelection playerName={playerName} />;
     };

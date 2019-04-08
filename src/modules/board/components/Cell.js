@@ -25,18 +25,22 @@ const Cell = ({
   type,
   yCoordinate,
   xCoordinate,
-  handleSetShipPosition
+  handleSetShipPosition,
+  owner
 }) => {
-  return (
-    <StyledDiv
-      type={type}
-      available={available}
-      highlighted={highlighted}
-      onClick={handleSetShipPosition}
-      onFocus={() => handleHoverToSetShip({ xCoordinate, yCoordinate })}
-      onMouseOver={() => handleHoverToSetShip({ xCoordinate, yCoordinate })}
-    />
-  );
+  if (owner === 'user') {
+    return (
+      <StyledDiv
+        type={type}
+        available={available}
+        highlighted={highlighted}
+        onClick={handleSetShipPosition}
+        onFocus={() => handleHoverToSetShip({ xCoordinate, yCoordinate })}
+        onMouseOver={() => handleHoverToSetShip({ xCoordinate, yCoordinate })}
+      />
+    );
+  }
+  return <StyledDiv type={type} available={available} />;
 };
 
 export default Cell;

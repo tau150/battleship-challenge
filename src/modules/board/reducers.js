@@ -1,24 +1,25 @@
 import * as types from '../../constants/actionTypes';
+import generateMatriz from '../../utils/helpers';
 
-const matriz = () => {
-  const cells = [];
+// const matriz = () => {
+//   const cells = [];
 
-  for (let i = 0; i <= 9; i += 1) {
-    for (let j = 0; j <= 9; j += 1) {
-      cells.push({
-        xCoordinate: i,
-        yCoordinate: j,
-        isAvailable: true,
-        highlighted: false,
-        type: null,
-        id: Math.random()
-          .toString(36)
-          .substr(2, 9)
-      });
-    }
-  }
-  return cells;
-};
+//   for (let i = 0; i <= 9; i += 1) {
+//     for (let j = 0; j <= 9; j += 1) {
+//       cells.push({
+//         xCoordinate: i,
+//         yCoordinate: j,
+//         isAvailable: true,
+//         highlighted: false,
+//         type: null,
+//         id: Math.random()
+//           .toString(36)
+//           .substr(2, 9)
+//       });
+//     }
+//   }
+//   return cells;
+// };
 
 const initialState = {
   ships: [
@@ -68,10 +69,12 @@ const initialState = {
       direction: 'horizontal'
     }
   ],
-  cells: matriz(),
+  cells: generateMatriz(),
   selectedShip: null,
   highlightedCells: null,
-  positionedShip: null
+  positionedShip: null,
+  cpuShips: null,
+  cpuCells: generateMatriz()
 };
 
 const boardReducer = (state = initialState, action) => {
@@ -97,6 +100,12 @@ const boardReducer = (state = initialState, action) => {
         positionedShip: action.payload.positionedShip,
         cells: action.payload.cells
       };
+
+    // case types.INIT_CPU_BOARD:
+    //   return {
+    //     ...state,
+    //     cpuCells: matriz()
+    //   };
 
     default:
       return state;

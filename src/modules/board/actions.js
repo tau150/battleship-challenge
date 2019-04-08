@@ -103,23 +103,8 @@ export const setShipPosition = (ships, selectedShip, positions, cells) => {
   };
 };
 
-// export const setShipPosition = (ships, selectedShip, positions) => {
-//   const allShips = ships;
-//   const shipToTransform = selectedShip;
-//   shipToTransform.position = positions;
-//   allShips.map(ship => {
-//     const iterableShip = ship;
-//     if (ship.id === shipToTransform.id) {
-//       iterableShip.position = positions;
-//     }
-//     return iterableShip;
-//   });
-
-//   return {
-//     type: types.SET_SHIP_POSITION,
-//     payload: {
-//       ships: allShips,
-//       positionedShip: shipToTransform
-//     }
-//   };
-// };
+export const initCpuBoard = () => {
+  return {
+    type: types.INIT_CPU_BOARD
+  };
+};

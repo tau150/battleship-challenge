@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import _ from 'lodash';
 import Cell from './Cell';
+
 import { highlightPossibleSelection, setShipPosition } from '../actions';
 
 const StyledDiv = styled.div`
@@ -94,20 +95,37 @@ class Board extends Component {
 
   render() {
     const renderCells = () => {
-      return this.props.cells.map(cell => {
-        return (
-          <Cell
-            key={cell.id}
-            handleHoverToSetShip={this.handleHoverToSetShip}
-            handleSetShipPosition={this.handleSetShipPosition}
-            xCoordinate={cell.xCoordinate}
-            yCoordinate={cell.yCoordinate}
-            type={cell.type}
-            highlighted={cell.highlighted}
-            available={cell.available}
-          />
-        );
-      });
+      if (this.props.owner === 'user') {
+        return this.props.cells.map(cell => {
+          return (
+            <Cell
+              key={cell.id}
+              handleHoverToSetShip={this.handleHoverToSetShip}
+              handleSetShipPosition={this.handleSetShipPosition}
+              owner="user"
+              xCoordinate={cell.xCoordinate}
+              yCoordinate={cell.yCoordinate}
+              type={cell.type}
+              highlighted={cell.highlighted}
+              available={cell.available}
+            />
+          );
+        });
+      }
+      if (this.props.owner === 'cpu') {
+        return this.props.cpuCells.map(cell => {
+          return (
+            <Cell
+              key={cell.id}
+              owner="cpu"
+              xCoordinate={cell.xCoordinate}
+              yCoordinate={cell.yCoordinate}
+              type={cell.type}
+              available={cell.available}
+            />
+          );
+        });
+      }
     };
 
     return <StyledDiv> {renderCells()} </StyledDiv>;
@@ -120,7 +138,8 @@ const mapStateToProps = state => {
     ships: state.boardReducer.ships,
     highlightedCells: state.boardReducer.highlightedCells,
     stage: state.gameReducer.stage,
-    cells: state.boardReducer.cells
+    cells: state.boardReducer.cells,
+    cpuCells: state.boardReducer.cpuCells
   };
 };
 
