@@ -15,7 +15,6 @@ const gameReducer = (state = initialState, action) => {
       };
 
     case types.START_BATTLE:
-      console.log('reducer');
       return {
         ...state,
         stage: 'battle'

@@ -32,7 +32,6 @@ class ShipSelection extends Component {
   };
 
   handleStartBattle = () => {
-    console.log('habdle');
     this.props.startBattle();
   };
 

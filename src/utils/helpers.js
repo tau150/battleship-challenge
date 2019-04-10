@@ -89,7 +89,7 @@ export const positionShip = (cells, ship, xCoordinate, yCoordinate) => {
 export const initCpu = () => {
   console.log('iniciando cpu');
 
-  const direction = ['horizontal', 'vertical'];
+  const shipDirection = ['horizontal', 'vertical'];
 
   let ships = [
     {
@@ -99,7 +99,7 @@ export const initCpu = () => {
         .substr(2, 9),
       position: null,
       hits: null,
-      direction: direction[Math.floor(Math.random() * direction.length)]
+      direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     },
     {
       type: 'Cruisers',
@@ -108,7 +108,7 @@ export const initCpu = () => {
         .substr(2, 9),
       position: null,
       hits: null,
-      direction: direction[Math.floor(Math.random() * direction.length)]
+      direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     },
     {
       type: 'Cruisers',
@@ -117,7 +117,7 @@ export const initCpu = () => {
         .substr(2, 9),
       position: null,
       hits: null,
-      direction: direction[Math.floor(Math.random() * direction.length)]
+      direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     },
     {
       type: 'Cruisers',
@@ -126,7 +126,7 @@ export const initCpu = () => {
         .substr(2, 9),
       position: null,
       hits: null,
-      direction: direction[Math.floor(Math.random() * direction.length)]
+      direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     },
     {
       type: 'Submarine',
@@ -135,7 +135,7 @@ export const initCpu = () => {
         .substr(2, 9),
       position: null,
       hits: null,
-      direction: direction[Math.floor(Math.random() * direction.length)]
+      direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     }
   ];
   let cells = generateMatrix();
