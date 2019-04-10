@@ -11,6 +11,7 @@ export const generateMatrix = () => {
         isAvailable: true,
         highlighted: false,
         type: null,
+        condition: null,
         id: Math.random()
           .toString(36)
           .substr(2, 9)
@@ -91,14 +92,15 @@ export const initCpu = () => {
 
   const shipDirection = ['horizontal', 'vertical'];
 
-  let ships = [
+  const ships = [
     {
       type: 'Carrier',
       id: Math.random()
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      hits: [],
+      condition: 'new',
       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     },
     {
@@ -107,7 +109,8 @@ export const initCpu = () => {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      hits: [],
+      condition: 'new',
       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     },
     {
@@ -116,7 +119,8 @@ export const initCpu = () => {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      condition: 'new',
+      hits: [],
       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     },
     {
@@ -125,7 +129,8 @@ export const initCpu = () => {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      hits: [],
+      condition: 'new',
       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     },
     {
@@ -134,13 +139,13 @@ export const initCpu = () => {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      hits: [],
+      condition: 'new',
       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     }
   ];
   let cells = generateMatrix();
-  const shipsWithPosition = [];
-  ships.forEach(ship => {
+  ships.map(ship => {
     const { direction, type } = ship;
     const availableCells = cells.filter(cell => cell.isAvailable);
     let positionedShip = false;
@@ -184,8 +189,8 @@ export const initCpu = () => {
 
       let isPossibleMatch = false;
 
-      coordinatesAvailableCells.forEach(cell => {
-        cellsToFill.forEach(cellToFill => {
+      coordinatesAvailableCells.map(cell => {
+        cellsToFill.map(cellToFill => {
           if (
             cell.xCoordinate === cellToFill.xCoordinate &&
             cell.yCoordinate === cellToFill.yCoordinate
@@ -198,7 +203,6 @@ export const initCpu = () => {
       if (isPossibleMatch) {
         const shipWithPostion = ship;
         shipWithPostion.position = cellsToFill;
-        shipsWithPosition.push(shipWithPostion);
 
         const newCells = cells.map(cell => {
           const c = cell;
@@ -216,7 +220,7 @@ export const initCpu = () => {
         positionedShip = true;
 
         cells = newCells;
-        ships = shipsWithPosition;
+        return shipWithPostion;
       }
     }
   });

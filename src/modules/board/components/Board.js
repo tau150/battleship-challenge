@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import _ from 'lodash';
 import Cell from './Cell';
 import { positionShip } from '../../../utils/helpers';
 
@@ -21,60 +20,6 @@ class Board extends Component {
   handleHoverToSetShip = coordinates => {
     const { selectedShip } = this.props;
     if (selectedShip) {
-      // const cellsToHighlight = [];
-      // const { xCoordinate, yCoordinate } = coordinates;
-
-      // const notAvailableCells = this.props.cells.filter(
-      //   cell => !cell.isAvailable
-      // );
-      // const makeCoordinatesObject = extension => {
-      //   if (selectedShip.direction === 'horizontal') {
-      //     if (Number(yCoordinate) + extension <= 10) {
-      //       for (let i = 0; i < extension; i += 1) {
-      //         cellsToHighlight.push({
-      //           xCoordinate: Number(xCoordinate),
-      //           yCoordinate: Number(yCoordinate) + i
-      //         });
-      //       }
-      //     }
-      //   } else if (selectedShip.direction === 'vertical') {
-      //     if (Number(xCoordinate) + extension <= 10) {
-      //       for (let i = 0; i < extension; i += 1) {
-      //         cellsToHighlight.push({
-      //           xCoordinate: Number(xCoordinate) + i,
-      //           yCoordinate: Number(yCoordinate)
-      //         });
-      //       }
-      //     }
-      //   }
-      // };
-
-      // if (selectedShip.type === 'Carrier') {
-      //   makeCoordinatesObject(4);
-      // } else if (selectedShip.type === 'Cruisers') {
-      //   makeCoordinatesObject(3);
-      // } else {
-      //   makeCoordinatesObject(2);
-      // }
-
-      // const coordinatesOfNotAvailableCells = notAvailableCells.map(cell =>
-      //   _.pick(cell, ['xCoordinate', 'yCoordinate'])
-      // );
-
-      // let isPossibleMatch = true;
-
-      // coordinatesOfNotAvailableCells.forEach(cell => {
-      //   cellsToHighlight.forEach(highLightedCell => {
-      //     if (
-      //       cell.xCoordinate === highLightedCell.xCoordinate &&
-      //       cell.yCoordinate === highLightedCell.yCoordinate
-      //     )
-      //       isPossibleMatch = false;
-      //   });
-      // });
-
-      // if (!isPossibleMatch) return;
-
       const cellsToHighlight = positionShip(
         this.props.cells,
         selectedShip,
@@ -106,34 +51,60 @@ class Board extends Component {
   };
 
   render() {
+    console.log(this.props.cpuShips);
     const renderCells = () => {
       if (this.props.owner === 'user') {
         return this.props.cells.map(cell => {
+          const {
+            id,
+            xCoordinate,
+            yCoordinate,
+            type,
+            condition,
+            highlighted,
+            available
+          } = cell;
           return (
             <Cell
-              key={cell.id}
+              key={id}
+              id={id}
+              owner="user"
+              stage={this.props.stage}
+              xCoordinate={xCoordinate}
+              yCoordinate={yCoordinate}
+              type={type}
+              condition={condition}
+              highlighted={highlighted}
+              available={available}
               handleHoverToSetShip={this.handleHoverToSetShip}
               handleSetShipPosition={this.handleSetShipPosition}
-              owner="user"
-              xCoordinate={cell.xCoordinate}
-              yCoordinate={cell.yCoordinate}
-              type={cell.type}
-              highlighted={cell.highlighted}
-              available={cell.available}
             />
           );
         });
       }
       if (this.props.owner === 'cpu') {
+        const { handleClickCpuBoard } = this.props;
+
         return this.props.cpuCells.map(cell => {
+          const {
+            id,
+            xCoordinate,
+            yCoordinate,
+            type,
+            condition,
+            available
+          } = cell;
           return (
             <Cell
-              key={cell.id}
+              key={id}
               owner="cpu"
-              xCoordinate={cell.xCoordinate}
-              yCoordinate={cell.yCoordinate}
-              type={cell.type}
-              available={cell.available}
+              id={id}
+              condition={condition}
+              xCoordinate={xCoordinate}
+              yCoordinate={yCoordinate}
+              type={type}
+              available={available}
+              handleClickCpuBoard={handleClickCpuBoard}
             />
           );
         });

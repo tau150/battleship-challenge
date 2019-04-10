@@ -5,6 +5,7 @@ import Board from '../../board/components/Board';
 import PlayerForm from '../../board/components/PlayerForm';
 import ShipSelection from '../../board/components/ShipsSelection';
 import { startGame } from '../../game/actions';
+import { attackShip } from '../../board/actions';
 
 const TitleContainer = styled.div`
   margin-top: 3%;
@@ -35,8 +36,22 @@ class DashBoard extends Component {
 
   render() {
     const { name, validForm } = this.state;
-    const { playerName } = this.props;
+    const { playerName, userTurn, cpuCells, cpuShips } = this.props;
 
+    const handleClickCpuBoard = (xCoordinate, yCoordinate, id, condition) => {
+      if (userTurn) {
+        const cellClicked = {
+          coordinates: {
+            xCoordinate,
+            yCoordinate
+          },
+          id,
+          condition
+        };
+
+        this.props.attackShip(cellClicked, 'user', cpuCells, cpuShips);
+      }
+    };
     const renderRightSideContent = () => {
       if (!playerName) {
         return (
@@ -49,7 +64,7 @@ class DashBoard extends Component {
         );
       }
       if (this.props.stage === 'battle') {
-        return <Board owner="cpu" />;
+        return <Board owner="cpu" handleClickCpuBoard={handleClickCpuBoard} />;
       }
       return <ShipSelection playerName={playerName} />;
     };
@@ -75,11 +90,14 @@ class DashBoard extends Component {
 const mapStateToProps = state => {
   return {
     playerName: state.gameReducer.playerName,
-    stage: state.gameReducer.stage
+    stage: state.gameReducer.stage,
+    cpuCells: state.boardReducer.cpuCells,
+    cpuShips: state.boardReducer.cpuShips,
+    userTurn: state.gameReducer.userTurn
   };
 };
 
 export default connect(
   mapStateToProps,
-  { startGame }
+  { startGame, attackShip }
 )(DashBoard);

@@ -12,7 +12,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      hits: [],
+      condition: 'new',
       direction: 'horizontal'
     },
     {
@@ -21,7 +22,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      hits: [],
+      condition: 'new',
       direction: 'horizontal'
     },
     {
@@ -30,7 +32,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      hits: [],
+      condition: 'new',
       direction: 'horizontal'
     },
     {
@@ -39,7 +42,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      hits: [],
+      condition: 'new',
       direction: 'horizontal'
     },
     {
@@ -48,7 +52,8 @@ const initialState = {
         .toString(36)
         .substr(2, 9),
       position: null,
-      hits: null,
+      hits: [],
+      condition: 'new',
       direction: 'horizontal'
     }
   ],
@@ -82,6 +87,13 @@ const boardReducer = (state = initialState, action) => {
         selectedShip: null,
         positionedShip: action.payload.positionedShip,
         cells: action.payload.cells
+      };
+
+    case types.ATTACK_SHIP:
+      return {
+        ...state,
+        cpuShips: action.payload.cpuShips,
+        cpuCells: action.payload.cpuCells
       };
 
     default:

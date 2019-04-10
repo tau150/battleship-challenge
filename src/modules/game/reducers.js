@@ -2,7 +2,8 @@ import * as types from '../../constants/actionTypes';
 
 const initialState = {
   playerName: null,
-  stage: 'starting'
+  stage: 'starting',
+  userTurn: true
 };
 
 const gameReducer = (state = initialState, action) => {

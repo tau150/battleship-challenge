@@ -12,6 +12,20 @@ const StyledDiv = styled.div`
   background: ${({ type }) => (type === 'Submarine' ? '#0B3861' : '')};
   background: ${({ type }) => (type === 'Cruisers' ? 'var(--primary) ' : '')};
   background: ${({ type }) => (type === 'Carrier' ? '#2ECCFA' : '')};
+  background: ${({ stage }) => (stage === 'battle' ? '#fff' : '')};
+  border: ${({ type, stage }) =>
+    type === 'Submarine' && stage === 'battle' ? '1.5px solid #0B3861' : ''};
+  border: ${({ type, stage }) =>
+    type === 'Cruisers' && stage === 'battle'
+      ? '1.5px solid var(--primary) '
+      : ''};
+  border: ${({ type, stage }) =>
+    type === 'Carrier' && stage === 'battle' ? '1.5px solid #2ECCFA' : ''};
+
+  background: ${({ condition }) => (condition === 'damaged' ? 'orange' : '')};
+  background: ${({ condition }) => (condition === 'destroyed' ? 'red' : '')};
+  background: ${({ condition }) => (condition === 'water' ? '#AAF6FF' : '')};
+
   @media (min-width: 992px) {
     width: 40px;
     height: 40px;
@@ -20,19 +34,25 @@ const StyledDiv = styled.div`
 
 const Cell = ({
   highlighted,
-  handleHoverToSetShip,
   available,
   type,
   yCoordinate,
   xCoordinate,
-  handleSetShipPosition,
-  owner
+  owner,
+  id,
+  condition,
+  handleClickCpuBoard,
+  handleHoverToSetShip,
+  stage,
+  handleSetShipPosition
 }) => {
   if (owner === 'user') {
     return (
       <StyledDiv
         type={type}
         available={available}
+        stage={stage}
+        condition={condition}
         highlighted={highlighted}
         onClick={handleSetShipPosition}
         onFocus={() => handleHoverToSetShip({ xCoordinate, yCoordinate })}
@@ -40,7 +60,19 @@ const Cell = ({
       />
     );
   }
-  return <StyledDiv type={type} available={available} />;
+
+  return (
+    <StyledDiv
+      onClick={() =>
+        handleClickCpuBoard(xCoordinate, yCoordinate, id, condition)
+      }
+      type={type}
+      condition={condition}
+      xCoordinate={xCoordinate}
+      yCoordinate={yCoordinate}
+      available={available}
+    />
+  );
 };
 
 export default Cell;

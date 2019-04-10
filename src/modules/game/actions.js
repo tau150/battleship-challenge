@@ -10,7 +10,6 @@ export const startGame = playerName => {
 };
 
 export const startBattle = () => {
-  console.log('action');
   return {
     type: types.START_BATTLE
   };

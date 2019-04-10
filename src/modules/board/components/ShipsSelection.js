@@ -19,9 +19,9 @@ const SyledH2 = styled.h2`
 `;
 
 class ShipSelection extends Component {
-  componentDidMount() {
-    this.props.initShips();
-  }
+  // componentDidMount() {
+  //   this.props.initShips();
+  // }
 
   handleSelectShip = ship => {
     this.props.selectShip(ship);

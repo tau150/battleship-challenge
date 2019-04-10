@@ -102,3 +102,76 @@ export const setShipPosition = (ships, selectedShip, positions, cells) => {
     }
   };
 };
+
+export const attackShip = (cell, owner, cells, ships) => {
+  const newCell = cell;
+
+  const { coordinates } = newCell;
+  newCell.condition = 'water';
+
+  let cellsToDestroy;
+
+  const newShips = ships.map(ship => {
+    const newShip = ship;
+    const { position, hits } = newShip;
+    const { condition } = newShip;
+    const matchedPosition = position.find(
+      pos =>
+        pos.xCoordinate === coordinates.xCoordinate &&
+        pos.yCoordinate === coordinates.yCoordinate
+    );
+
+    if (matchedPosition) {
+      hits.push(matchedPosition);
+      newCell.condition = 'damaged';
+      if (condition === 'new') {
+        newShip.condition = 'damaged';
+      }
+      if (hits.length === position.length) {
+        newShip.condition = 'destroyed';
+        cellsToDestroy = position;
+      }
+      return newShip;
+    }
+
+    return newShip;
+  });
+
+  const newCells = cells.map(cellElement => {
+    const c = cellElement;
+
+    if (
+      c.xCoordinate === coordinates.xCoordinate &&
+      c.yCoordinate === coordinates.yCoordinate
+    ) {
+      c.condition = newCell.condition;
+    }
+
+    return c;
+  });
+
+  if (cellsToDestroy) {
+    newCells.map(cellToCheck => {
+      const cellToReturn = cellToCheck;
+
+      return cellsToDestroy.map(cellToDestroy => {
+        if (
+          cellToDestroy.xCoordinate === cellToCheck.xCoordinate &&
+          cellToDestroy.yCoordinate === cellToCheck.yCoordinate
+        ) {
+          cellToReturn.condition = 'destroyed';
+        }
+
+        return cellToReturn;
+      });
+    });
+  }
+
+  return {
+    type: types.ATTACK_SHIP,
+    payload: {
+      cpuShips: newShips,
+      cpuCells: newCells
+    }
+  };
+};
