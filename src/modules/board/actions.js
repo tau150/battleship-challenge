@@ -102,9 +102,3 @@ export const setShipPosition = (ships, selectedShip, positions, cells) => {
     }
   };
 };
-
-export const initCpuBoard = () => {
-  return {
-    type: types.INIT_CPU_BOARD
-  };
-};

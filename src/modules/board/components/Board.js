@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import _ from 'lodash';
 import Cell from './Cell';
+import { positionShip } from '../../../utils/helpers';
 
 import { highlightPossibleSelection, setShipPosition } from '../actions';
 
@@ -20,61 +21,72 @@ class Board extends Component {
   handleHoverToSetShip = coordinates => {
     const { selectedShip } = this.props;
     if (selectedShip) {
-      const cellsToHighlight = [];
-      const { xCoordinate, yCoordinate } = coordinates;
+      // const cellsToHighlight = [];
+      // const { xCoordinate, yCoordinate } = coordinates;
 
-      const notAvailableCells = this.props.cells.filter(
-        cell => !cell.isAvailable
+      // const notAvailableCells = this.props.cells.filter(
+      //   cell => !cell.isAvailable
+      // );
+      // const makeCoordinatesObject = extension => {
+      //   if (selectedShip.direction === 'horizontal') {
+      //     if (Number(yCoordinate) + extension <= 10) {
+      //       for (let i = 0; i < extension; i += 1) {
+      //         cellsToHighlight.push({
+      //           xCoordinate: Number(xCoordinate),
+      //           yCoordinate: Number(yCoordinate) + i
+      //         });
+      //       }
+      //     }
+      //   } else if (selectedShip.direction === 'vertical') {
+      //     if (Number(xCoordinate) + extension <= 10) {
+      //       for (let i = 0; i < extension; i += 1) {
+      //         cellsToHighlight.push({
+      //           xCoordinate: Number(xCoordinate) + i,
+      //           yCoordinate: Number(yCoordinate)
+      //         });
+      //       }
+      //     }
+      //   }
+      // };
+
+      // if (selectedShip.type === 'Carrier') {
+      //   makeCoordinatesObject(4);
+      // } else if (selectedShip.type === 'Cruisers') {
+      //   makeCoordinatesObject(3);
+      // } else {
+      //   makeCoordinatesObject(2);
+      // }
+
+      // const coordinatesOfNotAvailableCells = notAvailableCells.map(cell =>
+      //   _.pick(cell, ['xCoordinate', 'yCoordinate'])
+      // );
+
+      // let isPossibleMatch = true;
+
+      // coordinatesOfNotAvailableCells.forEach(cell => {
+      //   cellsToHighlight.forEach(highLightedCell => {
+      //     if (
+      //       cell.xCoordinate === highLightedCell.xCoordinate &&
+      //       cell.yCoordinate === highLightedCell.yCoordinate
+      //     )
+      //       isPossibleMatch = false;
+      //   });
+      // });
+
+      // if (!isPossibleMatch) return;
+
+      const cellsToHighlight = positionShip(
+        this.props.cells,
+        selectedShip,
+        coordinates.xCoordinate,
+        coordinates.yCoordinate
       );
-      const makeCoordinatesObject = extension => {
-        if (selectedShip.direction === 'horizontal') {
-          if (Number(yCoordinate) + extension <= 10) {
-            for (let i = 0; i < extension; i += 1) {
-              cellsToHighlight.push({
-                xCoordinate: Number(xCoordinate),
-                yCoordinate: Number(yCoordinate) + i
-              });
-            }
-          }
-        } else if (selectedShip.direction === 'vertical') {
-          if (Number(xCoordinate) + extension <= 10) {
-            for (let i = 0; i < extension; i += 1) {
-              cellsToHighlight.push({
-                xCoordinate: Number(xCoordinate) + i,
-                yCoordinate: Number(yCoordinate)
-              });
-            }
-          }
-        }
-      };
-
-      if (selectedShip.type === 'Carrier') {
-        makeCoordinatesObject(4);
-      } else if (selectedShip.type === 'Cruisers') {
-        makeCoordinatesObject(3);
-      } else {
-        makeCoordinatesObject(2);
+      if (cellsToHighlight) {
+        this.props.highlightPossibleSelection(
+          cellsToHighlight,
+          this.props.cells
+        );
       }
-
-      const coordinatesOfNotAvailableCells = notAvailableCells.map(cell =>
-        _.pick(cell, ['xCoordinate', 'yCoordinate'])
-      );
-
-      let isPossibleMatch = true;
-
-      coordinatesOfNotAvailableCells.forEach(cell => {
-        cellsToHighlight.forEach(highLightedCell => {
-          if (
-            cell.xCoordinate === highLightedCell.xCoordinate &&
-            cell.yCoordinate === highLightedCell.yCoordinate
-          )
-            isPossibleMatch = false;
-        });
-      });
-
-      if (!isPossibleMatch) return;
-
-      this.props.highlightPossibleSelection(cellsToHighlight, this.props.cells);
     }
   };
 
@@ -139,7 +151,8 @@ const mapStateToProps = state => {
     highlightedCells: state.boardReducer.highlightedCells,
     stage: state.gameReducer.stage,
     cells: state.boardReducer.cells,
-    cpuCells: state.boardReducer.cpuCells
+    cpuCells: state.boardReducer.cpuCells,
+    cpuShips: state.boardReducer.cpuShips
   };
 };
 
