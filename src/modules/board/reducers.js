@@ -62,7 +62,10 @@ const initialState = {
   highlightedCells: null,
   positionedShip: null,
   cpuCells: initialization.cells,
-  cpuShips: initialization.ships
+  cpuShips: initialization.ships,
+  userDestroyedShips: 0,
+  cpuDestroyedShips: 0,
+  lastCpuImpact: null
 };
 
 const boardReducer = (state = initialState, action) => {
@@ -89,11 +92,23 @@ const boardReducer = (state = initialState, action) => {
         cells: action.payload.cells
       };
 
-    case types.ATTACK_SHIP:
+    case types.USER_ATTACK_SHIP:
       return {
         ...state,
         cpuShips: action.payload.cpuShips,
-        cpuCells: action.payload.cpuCells
+        cpuCells: action.payload.cpuCells,
+        cpuDestroyedShips:
+          state.cpuDestroyedShips + action.payload.destroyedShips
+      };
+
+    case types.CPU_ATTACK_SHIP:
+      return {
+        ...state,
+        ships: action.payload.userShips,
+        cells: action.payload.userCells,
+        lastCpuImpact: action.payload.attackedCell,
+        userDestroyedShips:
+          state.userDestroyedShips + action.payload.destroyedShips
       };
 
     default:

@@ -3,7 +3,8 @@ import * as types from '../../constants/actionTypes';
 const initialState = {
   playerName: null,
   stage: 'starting',
-  userTurn: true
+  userTurn: true,
+  winner: null
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -15,10 +16,28 @@ const gameReducer = (state = initialState, action) => {
         stage: 'placingShips'
       };
 
+    case types.RESTART_GAME:
+      return {
+        ...state,
+        stage: 'starting'
+      };
+
     case types.START_BATTLE:
       return {
         ...state,
         stage: 'battle'
+      };
+
+    case types.CHANGE_TURN:
+      return {
+        ...state,
+        userTurn: !state.userTurn
+      };
+
+    case types.FINISH_GAME:
+      return {
+        ...state,
+        winner: action.payload.winner
       };
 
     default:

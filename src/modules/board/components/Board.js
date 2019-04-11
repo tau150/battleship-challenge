@@ -51,7 +51,6 @@ class Board extends Component {
   };
 
   render() {
-    console.log(this.props.cpuShips);
     const renderCells = () => {
       if (this.props.owner === 'user') {
         return this.props.cells.map(cell => {

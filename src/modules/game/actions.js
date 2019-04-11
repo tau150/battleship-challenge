@@ -15,6 +15,21 @@ export const startBattle = () => {
   };
 };
 
+export const finishGame = winner => {
+  return {
+    type: types.FINISH_GAME,
+    payload: {
+      winner
+    }
+  };
+};
+
+export const changeTurn = () => {
+  return {
+    type: types.CHANGE_TURN
+  };
+};
+
 export const restartGame = () => {
   return {
     type: types.RESTART_GAME

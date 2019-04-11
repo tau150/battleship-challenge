@@ -1,11 +1,14 @@
 export const START_GAME = 'START_GAME';
-export const RESTART_GAME = 'RESTART_GAME';
+export const FINISH_GAME = 'FINISH_GAME';
 export const START_BATTLE = 'START_BATTLE';
+export const CHANGE_TURN = 'CHANGE_TURN';
+export const RESTART_GAME = 'RESTART_GAME';
 
 export const INIT_SHIPS = 'INIT_SHIPS';
 export const SELECT_SHIP = 'SELECT_SHIP';
 export const ROTATE_SHIP = 'ROTATE_SHIP';
 export const SET_SHIP_POSITION = 'SET_SHIP_POSITION';
-export const ATTACK_SHIP = 'ATTACK_SHIP';
+export const USER_ATTACK_SHIP = 'USER_ATTACK_SHIP';
+export const CPU_ATTACK_SHIP = 'CPU_ATTACK_SHIP';
 
 export const HIGHLIGHT_POSSIBLE_SELECTION = 'HIGHLIGHT_POSSIBLE_SELECTION';

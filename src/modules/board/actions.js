@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import * as types from '../../constants/actionTypes';
+import { changeTurn } from '../game/actions';
 
 export const initShips = () => {
   return {
@@ -70,20 +71,27 @@ export const highlightPossibleSelection = (cellsToHighlight, cells) => {
 };
 
 export const setShipPosition = (ships, selectedShip, positions, cells) => {
-  const allShips = ships;
   const shipToTransform = selectedShip;
-  shipToTransform.position = positions;
-  allShips.map(ship => {
+
+  const cellsToUseAsPosition = positions.map(position => {
+    return cells.find(cell => {
+      return cell.id === position;
+    });
+  });
+
+  const coordinatesForPosition = cellsToUseAsPosition.map(cell => {
+    return _.pick(cell, ['xCoordinate', 'yCoordinate']);
+  });
+
+  ships.map(ship => {
     const iterableShip = ship;
     if (ship.id === shipToTransform.id) {
-      iterableShip.position = positions;
+      iterableShip.position = coordinatesForPosition;
     }
     return iterableShip;
   });
 
-  const allCells = cells;
-
-  allCells.map(cell => {
+  cells.map(cell => {
     const c = cell;
 
     if (positions.indexOf(c.id) >= 0) {
@@ -96,30 +104,29 @@ export const setShipPosition = (ships, selectedShip, positions, cells) => {
   return {
     type: types.SET_SHIP_POSITION,
     payload: {
-      ships: allShips,
+      ships,
       positionedShip: shipToTransform,
-      cells: allCells
+      cells
     }
   };
 };
 
-export const attackShip = (cell, owner, cells, ships) => {
+export const attackShipFlow = (cell, cells, ships) => {
   const newCell = cell;
-
-  const { coordinates } = newCell;
+  const { xCoordinate, yCoordinate } = newCell;
   newCell.condition = 'water';
 
   let cellsToDestroy;
 
   const newShips = ships.map(ship => {
     const newShip = ship;
+
     const { position, hits } = newShip;
     const { condition } = newShip;
-    const matchedPosition = position.find(
-      pos =>
-        pos.xCoordinate === coordinates.xCoordinate &&
-        pos.yCoordinate === coordinates.yCoordinate
-    );
+
+    const matchedPosition = position.find(pos => {
+      return pos.xCoordinate === xCoordinate && pos.yCoordinate === yCoordinate;
+    });
 
     if (matchedPosition) {
       hits.push(matchedPosition);
@@ -140,10 +147,7 @@ export const attackShip = (cell, owner, cells, ships) => {
   const newCells = cells.map(cellElement => {
     const c = cellElement;
 
-    if (
-      c.xCoordinate === coordinates.xCoordinate &&
-      c.yCoordinate === coordinates.yCoordinate
-    ) {
+    if (c.xCoordinate === xCoordinate && c.yCoordinate === yCoordinate) {
       c.condition = newCell.condition;
     }
 
@@ -168,10 +172,53 @@ export const attackShip = (cell, owner, cells, ships) => {
   }
 
   return {
-    type: types.ATTACK_SHIP,
+    newShips,
+    newCells,
+    destroyedShips: cellsToDestroy ? 1 : 0,
+    attackedCell: newCell
+  };
+};
+
+export const userAttackShip = (cell, cells, ships) => {
+  const result = attackShipFlow(cell, cells, ships, 'user');
+
+  const { newShips, newCells, destroyedShips } = result;
+  return {
+    type: types.USER_ATTACK_SHIP,
     payload: {
       cpuShips: newShips,
-      cpuCells: newCells
+      cpuCells: newCells,
+      destroyedShips
+    }
+  };
+};
+
+export const cpuAttackShip = (cell, cells, ships) => {
+  const result = attackShipFlow(cell, cells, ships, 'cpu');
+
+  const { newShips, newCells, destroyedShips, attackedCell } = result;
+
+  return {
+    type: types.CPU_ATTACK_SHIP,
+    payload: {
+      userShips: newShips,
+      userCells: newCells,
+      destroyedShips,
+      attackedCell
+    }
+  };
+};
+
+export const attackShip = (userTurn, cell, cells, ships) => {
+  return dispatch => {
+    if (userTurn) {
+      dispatch(userAttackShip(cell, cells, ships));
+      dispatch(changeTurn());
+    }
+
+    if (!userTurn) {
+      dispatch(cpuAttackShip(cell, cells, ships));
+      dispatch(changeTurn());
     }
   };
 };
