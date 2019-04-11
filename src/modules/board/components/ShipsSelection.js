@@ -18,11 +18,11 @@ const SyledH2 = styled.h2`
   }
 `;
 
-class ShipSelection extends Component {
-  // componentDidMount() {
-  //   this.props.initShips();
-  // }
+const StyledButton = styled.button`
+  margin-left: 20%;
+`;
 
+class ShipSelection extends Component {
   handleSelectShip = ship => {
     this.props.selectShip(ship);
   };
@@ -62,28 +62,30 @@ class ShipSelection extends Component {
       <div className="col-12 col-lg-6">
         <div>
           <SyledH2>
-            Hi <strong> {playerName}</strong> , these is your army
+            Hi <strong>{playerName}</strong>, this is your army
           </SyledH2>
         </div>
         <div>{renderShips()}</div>
         <div>
           {filteredShips.length === 0 ? (
-            <button
-              onClick={this.handleStartBattle}
-              type="button"
-              className="btn btn-outline-primary mt-5"
-            >
-              START BATTLE
-            </button>
+            <div className="d-flex justify-content-center">
+              <button
+                onClick={this.handleStartBattle}
+                type="button"
+                className="btn btn-outline-primary mt-5"
+              >
+                START BATTLE
+              </button>
+            </div>
           ) : (
-            <button
+            <StyledButton
               onClick={this.handleRotateShip}
               type="button"
               disabled={!selectedShip ? 'disabled' : ''}
-              className="btn btn-outline-primary mt-5"
+              className="btn btn-outline-primary mt-5 rotate-button"
             >
               ROTATE SHIP
-            </button>
+            </StyledButton>
           )}
         </div>
       </div>

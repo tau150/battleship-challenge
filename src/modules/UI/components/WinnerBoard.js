@@ -21,14 +21,14 @@ const StyledDiv = styled.div`
 const WinnerBoard = ({ winner, handleRestartGame }) => {
   return (
     <StyledDiv>
-      <h1> {winner} won the battle ! </h1>
-      <button
+      <h1> {winner} won the battle! </h1>
+      {/* <button
         type="button"
         className="btn btn-outline-primary"
-        onCLick={handleRestartGame}
+        onClick={handleRestartGame}
       >
         Restart
-      </button>
+      </button> */}
     </StyledDiv>
   );
 };

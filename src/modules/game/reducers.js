@@ -16,12 +16,6 @@ const gameReducer = (state = initialState, action) => {
         stage: 'placingShips'
       };
 
-    case types.RESTART_GAME:
-      return {
-        ...state,
-        stage: 'starting'
-      };
-
     case types.START_BATTLE:
       return {
         ...state,

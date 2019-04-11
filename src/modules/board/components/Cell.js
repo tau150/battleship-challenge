@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyledDiv = styled.div`
-  width: 20px;
+  flex-basis: 10%;
   height: 20px;
   border: 1px solid #eaeaea;
   background: var(--light);
@@ -14,20 +14,20 @@ const StyledDiv = styled.div`
   background: ${({ type }) => (type === 'Carrier' ? '#2ECCFA' : '')};
   background: ${({ stage }) => (stage === 'battle' ? '#fff' : '')};
   border: ${({ type, stage }) =>
-    type === 'Submarine' && stage === 'battle' ? '1.5px solid #0B3861' : ''};
+    type === 'Submarine' && stage === 'battle' ? '1px solid #0B3861' : ''};
   border: ${({ type, stage }) =>
     type === 'Cruisers' && stage === 'battle'
-      ? '1.5px solid var(--primary) '
+      ? '1px solid var(--primary) '
       : ''};
   border: ${({ type, stage }) =>
-    type === 'Carrier' && stage === 'battle' ? '1.5px solid #2ECCFA' : ''};
+    type === 'Carrier' && stage === 'battle' ? '1px solid #2ECCFA' : ''};
 
   background: ${({ condition }) => (condition === 'damaged' ? 'orange' : '')};
   background: ${({ condition }) => (condition === 'destroyed' ? 'red' : '')};
   background: ${({ condition }) => (condition === 'water' ? '#AAF6FF' : '')};
 
   @media (min-width: 992px) {
-    width: 40px;
+    flex-basis: 10%;
     height: 40px;
   }
 `;

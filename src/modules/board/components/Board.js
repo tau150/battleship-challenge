@@ -8,12 +8,14 @@ import { highlightPossibleSelection, setShipPosition } from '../actions';
 
 const StyledDiv = styled.div`
   display: flex;
-  border: 1.5px solid #777;
+  border: 1px solid #777;
   flex-wrap: wrap;
-  width: 203px;
+  width: 220px;
+
+  padding: 0;
 
   @media (min-width: 992px) {
-    width: 406px;
+    width: 440px;
   }
 `;
 class Board extends Component {

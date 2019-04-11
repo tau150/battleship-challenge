@@ -230,3 +230,7 @@ export const initCpu = () => {
     cells
   };
 };
+
+export const calculateNextImpact = lastImpact => {
+  const { xCoordinate, yCoordinate } = lastImpact;
+};

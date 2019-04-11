@@ -5,8 +5,9 @@ import _ from 'lodash';
 import Board from '../../board/components/Board';
 import PlayerForm from '../../board/components/PlayerForm';
 import ShipSelection from '../../board/components/ShipsSelection';
-import { startGame, finishGame, restartGame } from '../../game/actions';
+import { startGame, finishGame } from '../../game/actions';
 import { attackShip } from '../../board/actions';
+import { calculateNextImpact } from '../../../utils/helpers';
 import WinnerBoard from './WinnerBoard';
 
 const TitleContainer = styled.div`
@@ -15,6 +16,19 @@ const TitleContainer = styled.div`
   h2 {
     text-align: center;
   }
+`;
+
+const StyledDiv = styled.div`
+  margin-right: 0;
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+
+
+  @media(min-width: 992px){
+    margin-top: 0;
+    display: block;
+  })
 `;
 
 class DashBoard extends Component {
@@ -28,6 +42,7 @@ class DashBoard extends Component {
       userTurn,
       userCells,
       userShips,
+      latestCpuImpacts,
       cpuDestroyedShips,
       userDestroyedShips
     } = this.props;
@@ -40,9 +55,11 @@ class DashBoard extends Component {
       this.props.finishGame('cpu');
     }
 
+    console.log(latestCpuImpacts);
+
+    // RANDOM
     if (!userTurn) {
       let availableCell = false;
-
       while (!availableCell) {
         const randomCell = _.sample(userCells);
         if (randomCell.condition === null) {
@@ -51,6 +68,32 @@ class DashBoard extends Component {
         }
       }
     }
+
+    // if (!userTurn) {
+    //   let lastImpactCondition = null;
+    //   let lastImpact;
+    //   if (latestCpuImpacts.length > 0) {
+    //     lastImpact = _.last(latestCpuImpacts);
+    //     lastImpactCondition = lastImpact.condition;
+    //   }
+
+    //   if (lastImpactCondition !== 'damaged') {
+    //     let availableCell = false;
+    //     while (!availableCell) {
+    //       const randomCell = _.sample(userCells);
+    //       if (randomCell.condition === null) {
+    //         this.props.attackShip(userTurn, randomCell, userCells, userShips);
+    //         availableCell = true;
+    //       }
+    //     }
+    //   } else {
+    //     const nextImpact = calculateNextImpact(lastImpact);
+    //   }
+
+    //   // console.log(latestCpuImpacts);
+    //   // const randomCell2 = _.sample(userCells);
+    //   // this.props.attackShip(userTurn, randomCell2, userCells, userShips);
+    // }
   }
 
   handleChangePlayerName = e => {
@@ -66,9 +109,9 @@ class DashBoard extends Component {
     }
   };
 
-  handleRestartGame = () => {
-    this.props.restartGame();
-  };
+  // handleRestartGame = () => {
+  //   this.props.restartGame();
+  // };
 
   render() {
     const { name, validForm } = this.state;
@@ -98,7 +141,11 @@ class DashBoard extends Component {
         );
       }
       if (this.props.stage === 'battle') {
-        return <Board owner="cpu" handleClickCpuBoard={handleClickCpuBoard} />;
+        return (
+          <StyledDiv>
+            <Board owner="cpu" handleClickCpuBoard={handleClickCpuBoard} />
+          </StyledDiv>
+        );
       }
       return <ShipSelection playerName={playerName} />;
     };
@@ -141,11 +188,12 @@ const mapStateToProps = state => {
     cpuCells: state.boardReducer.cpuCells,
     cpuShips: state.boardReducer.cpuShips,
     userTurn: state.gameReducer.userTurn,
-    winner: state.gameReducer.winner
+    winner: state.gameReducer.winner,
+    latestCpuImpacts: state.boardReducer.latestCpuImpacts
   };
 };
 
 export default connect(
   mapStateToProps,
-  { startGame, attackShip, finishGame, restartGame }
+  { startGame, attackShip, finishGame }
 )(DashBoard);

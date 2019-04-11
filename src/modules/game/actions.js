@@ -30,8 +30,8 @@ export const changeTurn = () => {
   };
 };
 
-export const restartGame = () => {
-  return {
-    type: types.RESTART_GAME
-  };
-};
+// export const restartGame = () => {
+//   return {
+//     type: types.RESTART_GAME
+//   };
+// };

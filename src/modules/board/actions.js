@@ -165,12 +165,10 @@ export const attackShipFlow = (cell, cells, ships) => {
         ) {
           cellToReturn.condition = 'destroyed';
         }
-
         return cellToReturn;
       });
     });
   }
-
   return {
     newShips,
     newCells,
@@ -197,7 +195,6 @@ export const cpuAttackShip = (cell, cells, ships) => {
   const result = attackShipFlow(cell, cells, ships, 'cpu');
 
   const { newShips, newCells, destroyedShips, attackedCell } = result;
-
   return {
     type: types.CPU_ATTACK_SHIP,
     payload: {

@@ -65,7 +65,7 @@ const initialState = {
   cpuShips: initialization.ships,
   userDestroyedShips: 0,
   cpuDestroyedShips: 0,
-  lastCpuImpact: null
+  latestCpuImpacts: []
 };
 
 const boardReducer = (state = initialState, action) => {
@@ -106,7 +106,10 @@ const boardReducer = (state = initialState, action) => {
         ...state,
         ships: action.payload.userShips,
         cells: action.payload.userCells,
-        lastCpuImpact: action.payload.attackedCell,
+        latestCpuImpacts: [
+          ...state.latestCpuImpacts,
+          action.payload.attackedCell
+        ],
         userDestroyedShips:
           state.userDestroyedShips + action.payload.destroyedShips
       };
