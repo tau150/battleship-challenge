@@ -42,8 +42,11 @@ const StyledP = styled.p`
   padding: 0;
 
   @media (min-width: 992px) {
-    font-size: 2rem;
+    font-size: 1.6rem;
     margin-left: 80px;
+  }
+  &.cpu-name {
+    margin-left: 0;
   }
 `;
 
@@ -171,7 +174,7 @@ class DashBoard extends Component {
       if (this.props.stage === 'battle') {
         return (
           <StyledDiv>
-            <StyledP className="align-self-start">CPU</StyledP>
+            <StyledP className="align-self-start cpu-name">CPU</StyledP>
             <Board owner="cpu" handleClickCpuBoard={handleClickCpuBoard} />
             {this.props.stage === 'battle' ? (
               <StateFooter
