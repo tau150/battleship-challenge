@@ -3,6 +3,7 @@ export const FINISH_GAME = 'FINISH_GAME';
 export const START_BATTLE = 'START_BATTLE';
 export const CHANGE_TURN = 'CHANGE_TURN';
 export const RESTART_GAME = 'RESTART_GAME';
+export const SURRENDER = 'SURRENDER';
 
 export const INIT_SHIPS = 'INIT_SHIPS';
 export const SELECT_SHIP = 'SELECT_SHIP';

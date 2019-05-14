@@ -214,8 +214,10 @@ export const attackShip = (userTurn, cell, cells, ships) => {
     }
 
     if (!userTurn) {
-      dispatch(cpuAttackShip(cell, cells, ships));
-      dispatch(changeTurn());
+      setTimeout(() => {
+        dispatch(changeTurn());
+        dispatch(cpuAttackShip(cell, cells, ships));
+      }, 1000);
     }
   };
 };

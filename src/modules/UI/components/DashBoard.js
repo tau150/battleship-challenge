@@ -5,10 +5,11 @@ import _ from 'lodash';
 import Board from '../../board/components/Board';
 import PlayerForm from '../../board/components/PlayerForm';
 import ShipSelection from '../../board/components/ShipsSelection';
-import { startGame, finishGame } from '../../game/actions';
+import { startGame, finishGame, surrender } from '../../game/actions';
 import { attackShip } from '../../board/actions';
 import { calculateNextImpact } from '../../../utils/helpers';
 import WinnerBoard from './WinnerBoard';
+import StateFooter from '../../board/components/StateFooter';
 
 const TitleContainer = styled.div`
   margin-top: 3%;
@@ -19,16 +20,39 @@ const TitleContainer = styled.div`
 `;
 
 const StyledDiv = styled.div`
+
   margin-right: 0;
   margin-top: 50px;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 
 
   @media(min-width: 992px){
     margin-top: 0;
     display: block;
   })
+`;
+
+const StyledP = styled.p`
+  font-size: 1.4rem;
+  color: var(--secondary);
+  margin-left: 60px;
+  padding: 0;
+
+  @media (min-width: 992px) {
+    font-size: 2rem;
+    margin-left: 80px;
+  }
+`;
+
+const StyledGeneralContainer = styled.div`
+  margin-top: 50px;
+
+  @media (min-width: 992px) {
+    padding-top: 50px;
+  }
 `;
 
 class DashBoard extends Component {
@@ -96,6 +120,10 @@ class DashBoard extends Component {
     // }
   }
 
+  handleSurrender = () => {
+    this.props.surrender();
+  };
+
   handleChangePlayerName = e => {
     this.setState({ name: e.target.value, validForm: true });
   };
@@ -143,7 +171,17 @@ class DashBoard extends Component {
       if (this.props.stage === 'battle') {
         return (
           <StyledDiv>
+            <StyledP className="align-self-start">CPU</StyledP>
             <Board owner="cpu" handleClickCpuBoard={handleClickCpuBoard} />
+            {this.props.stage === 'battle' ? (
+              <StateFooter
+                playerName={this.props.playerName}
+                userTurn={this.props.userTurn}
+                handleSurrender={this.props.surrender}
+              />
+            ) : (
+              ''
+            )}
           </StyledDiv>
         );
       }
@@ -164,13 +202,13 @@ class DashBoard extends Component {
             winner={winner === 'user' ? 'You' : 'Machine'}
           />
         ) : (
-          <div className="row mt-5">
-            <div className="col-12" />
-            <div className="col-12 col-lg-6 d-flex justify-content-center">
+          <StyledGeneralContainer className="row mt-2">
+            <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center">
+              <StyledP className="align-self-start">{playerName}</StyledP>
               <Board owner="user" />
             </div>
             <div className="col-12 col-lg-6">{renderRightSideContent()}</div>
-          </div>
+          </StyledGeneralContainer>
         )}
       </React.Fragment>
     );
@@ -195,5 +233,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { startGame, attackShip, finishGame }
+  { startGame, attackShip, finishGame, surrender }
 )(DashBoard);

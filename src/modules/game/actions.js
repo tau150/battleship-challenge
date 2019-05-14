@@ -30,6 +30,12 @@ export const changeTurn = () => {
   };
 };
 
+export const surrender = () => {
+  return {
+    type: types.SURRENDER
+  };
+};
+
 // export const restartGame = () => {
 //   return {
 //     type: types.RESTART_GAME

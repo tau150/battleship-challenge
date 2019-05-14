@@ -34,6 +34,12 @@ const gameReducer = (state = initialState, action) => {
         winner: action.payload.winner
       };
 
+    case types.SURRENDER:
+      return {
+        ...state,
+        winner: 'cpu'
+      };
+
     default:
       return state;
   }
