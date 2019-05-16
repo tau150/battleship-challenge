@@ -211,12 +211,12 @@ export const attackShip = (userTurn, cell, cells, ships) => {
   return dispatch => {
     if (userTurn) {
       dispatch(userAttackShip(cell, cells, ships));
-      // dispatch(changeTurn());
+      dispatch(changeTurn());
     }
 
     if (!userTurn) {
       dispatch(cpuAttackShip(cell, cells, ships));
-      // dispatch(changeTurn());
+      dispatch(changeTurn());
     }
   };
 };

@@ -10,7 +10,8 @@ import {
   attackShip,
   changeStrategy,
   changeDirection,
-  changeGameMode
+  changeGameMode,
+  setTarget
 } from '../../board/actions';
 import {
   calculateNextImpact,
@@ -219,10 +220,10 @@ class DashBoard extends Component {
     };
 
     if (!userTurn) {
-      console.log(this.props.latestCpuImpacts);
       const availableUserCells = this.props.userCells.filter(
         cell => cell.condition === null
       );
+
       let lastImpactCondition = null;
       let lastImpact;
       if (this.props.latestCpuImpacts.length > 0) {
@@ -232,6 +233,7 @@ class DashBoard extends Component {
       if (this.props.target && this.props.target.condition === 'destroyed') {
         this.props.changeGameMode('random', null);
       }
+
       if (this.props.strategy === 'random') {
         if (lastImpactCondition === 'damaged') {
           this.props.changeGameMode('strategy', lastImpact);
@@ -246,17 +248,20 @@ class DashBoard extends Component {
         }
       }
       if (this.props.strategy === 'strategy') {
-        let directionToApply = this.props.lastDirection;
+        let directionToApply = this.props.lastDirection; // null
         const possibleDirections = getPossibleDirections(
           availableUserCells,
           this.props.target
         );
+
         if (lastImpactCondition === 'water') {
+          lastImpact = null;
           possibleDirections.filter(
             direction => direction !== this.props.lastDirection
           );
           directionToApply = _.sample(possibleDirections);
         }
+
         const nextImpact = calculateNextImpact(
           this.props.target,
           lastImpact,
@@ -271,6 +276,8 @@ class DashBoard extends Component {
         );
       }
     }
+
+    console.log('user turn', this.props.latestCpuImpacts);
 
     return (
       <React.Fragment>
@@ -315,7 +322,8 @@ const mapStateToProps = state => {
     strategy: state.boardReducer.strategy,
     lastDirection: state.boardReducer.lastDirection,
     changedDirection: state.boardReducer.changedDirection,
-    target: state.boardReducer.target
+    target: state.boardReducer.target,
+    lastImpact: state.boardReducer.lastImpact
   };
 };
 
@@ -328,6 +336,7 @@ export default connect(
     surrender,
     changeStrategy,
     changeDirection,
-    changeGameMode
+    changeGameMode,
+    setTarget
   }
 )(DashBoard);

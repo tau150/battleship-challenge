@@ -258,31 +258,33 @@ export const calculateNextImpact = (
     direction = lastDirection;
   }
 
+  const initialPoint = lastImpact || target;
+
   if (direction === 'left') {
     nextImpact = {
-      xCoordinate: target.xCoordinate,
-      yCoordinate: target.yCoordinate - 1
+      xCoordinate: initialPoint.xCoordinate,
+      yCoordinate: initialPoint.yCoordinate - 1
     };
   }
 
   if (direction === 'right') {
     nextImpact = {
-      xCoordinate: target.xCoordinate,
-      yCoordinate: target.yCoordinate + 1
+      xCoordinate: initialPoint.xCoordinate,
+      yCoordinate: initialPoint.yCoordinate + 1
     };
   }
 
   if (direction === 'down') {
     nextImpact = {
-      xCoordinate: target.xCoordinate + 1,
-      yCoordinate: target.yCoordinate
+      xCoordinate: initialPoint.xCoordinate + 1,
+      yCoordinate: initialPoint.yCoordinate
     };
   }
 
   if (direction === 'up') {
     nextImpact = {
-      xCoordinate: target.xCoordinate - 1,
-      yCoordinate: target.yCoordinate
+      xCoordinate: initialPoint.xCoordinate - 1,
+      yCoordinate: initialPoint.yCoordinate
     };
   }
 

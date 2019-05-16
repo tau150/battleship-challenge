@@ -70,7 +70,8 @@ const initialState = {
   possibleDirections: null,
   lastDirection: null,
   changedDirection: false,
-  target: null
+  target: null,
+  lastImpact: null
 };
 
 const boardReducer = (state = initialState, action) => {
