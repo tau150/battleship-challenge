@@ -201,7 +201,8 @@ export const cpuAttackShip = (cell, cells, ships) => {
       userShips: newShips,
       userCells: newCells,
       destroyedShips,
-      attackedCell
+      attackedCell,
+      lastDirection: attackedCell.direction
     }
   };
 };
@@ -210,14 +211,53 @@ export const attackShip = (userTurn, cell, cells, ships) => {
   return dispatch => {
     if (userTurn) {
       dispatch(userAttackShip(cell, cells, ships));
-      dispatch(changeTurn());
+      // dispatch(changeTurn());
     }
 
     if (!userTurn) {
-      setTimeout(() => {
-        dispatch(changeTurn());
-        dispatch(cpuAttackShip(cell, cells, ships));
-      }, 1000);
+      dispatch(cpuAttackShip(cell, cells, ships));
+      // dispatch(changeTurn());
     }
+  };
+};
+
+export const changeStrategy = strategy => {
+  return {
+    type: types.CHANGE_STRATEGY,
+    payload: {
+      strategy
+    }
+  };
+};
+
+export const changeDirection = (direction, possibleDirections) => {
+  return {
+    type: types.CHANGE_DIRECTION,
+    payload: {
+      direction,
+      possibleDirections
+    }
+  };
+};
+
+export const setTarget = target => {
+  return {
+    type: types.SET_TARGET,
+    payload: {
+      target
+    }
+  };
+};
+
+export const changeGameMode = (strategy, target) => {
+  if (target) {
+    return dispatch => {
+      dispatch(setTarget(target));
+      dispatch(changeStrategy(strategy));
+    };
+  }
+
+  return dispatch => {
+    dispatch(changeStrategy(strategy));
   };
 };

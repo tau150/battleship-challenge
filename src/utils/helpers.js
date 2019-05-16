@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { isBoolean } from 'util';
 
 export const generateMatrix = () => {
   const cells = [];
@@ -231,6 +232,103 @@ export const initCpu = () => {
   };
 };
 
-export const calculateNextImpact = lastImpact => {
-  const { xCoordinate, yCoordinate } = lastImpact;
+export const getNextAvailableCellForImpact = (
+  possibleImpact,
+  availableUserCells
+) => {
+  return availableUserCells.some(
+    cell =>
+      cell.xCoordinate === possibleImpact.xCoordinate &&
+      cell.yCoordinate === possibleImpact.yCoordinate
+  );
+};
+
+export const calculateNextImpact = (
+  target,
+  lastImpact,
+  possibleDirections,
+  lastDirection
+) => {
+  let nextImpact;
+  let direction;
+
+  if (!lastDirection) {
+    direction = _.sample(possibleDirections);
+  } else {
+    direction = lastDirection;
+  }
+
+  if (direction === 'left') {
+    nextImpact = {
+      xCoordinate: target.xCoordinate,
+      yCoordinate: target.yCoordinate - 1
+    };
+  }
+
+  if (direction === 'right') {
+    nextImpact = {
+      xCoordinate: target.xCoordinate,
+      yCoordinate: target.yCoordinate + 1
+    };
+  }
+
+  if (direction === 'down') {
+    nextImpact = {
+      xCoordinate: target.xCoordinate + 1,
+      yCoordinate: target.yCoordinate
+    };
+  }
+
+  if (direction === 'up') {
+    nextImpact = {
+      xCoordinate: target.xCoordinate - 1,
+      yCoordinate: target.yCoordinate
+    };
+  }
+
+  nextImpact.direction = direction;
+
+  return nextImpact;
+};
+
+export const getPossibleDirections = (availableUserCells, lastImpact) => {
+  const possibleDirections = [];
+
+  const aboveCell = availableUserCells.find(
+    cell =>
+      cell.xCoordinate === lastImpact.xCoordinate + 1 &&
+      cell.yCoordinate === lastImpact.yCoordinate
+  );
+
+  const belowCell = availableUserCells.find(
+    cell =>
+      cell.xCoordinate === lastImpact.xCoordinate + -1 &&
+      cell.yCoordinate === lastImpact.yCoordinate
+  );
+
+  const rightCell = availableUserCells.find(
+    cell =>
+      cell.xCoordinate === lastImpact.xCoordinate &&
+      cell.yCoordinate === lastImpact.yCoordinate + 1
+  );
+  const leftCell = availableUserCells.find(
+    cell =>
+      cell.xCoordinate === lastImpact.xCoordinate &&
+      cell.yCoordinate === lastImpact.yCoordinate - 1
+  );
+
+  if (lastImpact.xCoordinate > 0 && aboveCell && aboveCell.condition === null) {
+    possibleDirections.push('up');
+  }
+  if (lastImpact.xCoordinate < 9 && belowCell && belowCell.condition === null) {
+    possibleDirections.push('down');
+  }
+  if (lastImpact.yCoordinate > 0 && leftCell && leftCell.condition === null) {
+    possibleDirections.push('left');
+  }
+  if (lastImpact.yCoordinate < 9 && rightCell && rightCell.condition === null) {
+    possibleDirections.push('right');
+  }
+
+  return possibleDirections;
 };

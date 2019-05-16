@@ -65,7 +65,12 @@ const initialState = {
   cpuShips: initialization.ships,
   userDestroyedShips: 0,
   cpuDestroyedShips: 0,
-  latestCpuImpacts: []
+  latestCpuImpacts: [],
+  strategy: 'random',
+  possibleDirections: null,
+  lastDirection: null,
+  changedDirection: false,
+  target: null
 };
 
 const boardReducer = (state = initialState, action) => {
@@ -111,7 +116,33 @@ const boardReducer = (state = initialState, action) => {
           action.payload.attackedCell
         ],
         userDestroyedShips:
-          state.userDestroyedShips + action.payload.destroyedShips
+          state.userDestroyedShips + action.payload.destroyedShips,
+        lastDirection: action.payload.lastDirection
+        // strategy:
+        //   action.payload.attackedCell.condition === 'destroyed'
+        //     ? 'random'
+        //     : state.strategy
+      };
+
+    case types.CHANGE_STRATEGY:
+      return {
+        ...state,
+        strategy: action.payload.strategy
+        // target: action.payload.target
+      };
+
+    case types.SET_TARGET:
+      return {
+        ...state,
+        target: action.payload.target
+      };
+
+    case types.CHANGE_DIRECTION:
+      return {
+        ...state,
+        lastDirection: action.payload.direction,
+        changedDirection: true,
+        possibleDirections: action.payload.possibleDirections
       };
 
     default:

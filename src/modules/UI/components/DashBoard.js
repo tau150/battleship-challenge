@@ -6,8 +6,16 @@ import Board from '../../board/components/Board';
 import PlayerForm from '../../board/components/PlayerForm';
 import ShipSelection from '../../board/components/ShipsSelection';
 import { startGame, finishGame, surrender } from '../../game/actions';
-import { attackShip } from '../../board/actions';
-import { calculateNextImpact } from '../../../utils/helpers';
+import {
+  attackShip,
+  changeStrategy,
+  changeDirection,
+  changeGameMode
+} from '../../board/actions';
+import {
+  calculateNextImpact,
+  getPossibleDirections
+} from '../../../utils/helpers';
 import WinnerBoard from './WinnerBoard';
 import StateFooter from '../../board/components/StateFooter';
 
@@ -64,64 +72,75 @@ class DashBoard extends Component {
     validForm: true
   };
 
-  componentDidUpdate() {
-    const {
-      userTurn,
-      userCells,
-      userShips,
-      latestCpuImpacts,
-      cpuDestroyedShips,
-      userDestroyedShips
-    } = this.props;
-
-    if (cpuDestroyedShips === 5) {
-      this.props.finishGame('user');
-    }
-
-    if (userDestroyedShips === 5) {
-      this.props.finishGame('cpu');
-    }
-
-    console.log(latestCpuImpacts);
-
-    // RANDOM
-    if (!userTurn) {
-      let availableCell = false;
-      while (!availableCell) {
-        const randomCell = _.sample(userCells);
-        if (randomCell.condition === null) {
-          this.props.attackShip(userTurn, randomCell, userCells, userShips);
-          availableCell = true;
-        }
-      }
-    }
-
-    // if (!userTurn) {
-    //   let lastImpactCondition = null;
-    //   let lastImpact;
-    //   if (latestCpuImpacts.length > 0) {
-    //     lastImpact = _.last(latestCpuImpacts);
-    //     lastImpactCondition = lastImpact.condition;
-    //   }
-
-    //   if (lastImpactCondition !== 'damaged') {
-    //     let availableCell = false;
-    //     while (!availableCell) {
-    //       const randomCell = _.sample(userCells);
-    //       if (randomCell.condition === null) {
-    //         this.props.attackShip(userTurn, randomCell, userCells, userShips);
-    //         availableCell = true;
-    //       }
-    //     }
-    //   } else {
-    //     const nextImpact = calculateNextImpact(lastImpact);
-    //   }
-
-    //   // console.log(latestCpuImpacts);
-    //   // const randomCell2 = _.sample(userCells);
-    //   // this.props.attackShip(userTurn, randomCell2, userCells, userShips);
-    // }
-  }
+  // componentDidUpdate() {
+  //   // const {
+  //   //   userTurn,
+  //   //   userCells,
+  //   //   userShips,
+  //   //   latestCpuImpacts,
+  //   //   cpuDestroyedShips,
+  //   //   userDestroyedShips
+  //   // } = this.props;
+  //   // if (cpuDestroyedShips === 5) {
+  //   //   this.props.finishGame('user');
+  //   // }
+  //   // if (userDestroyedShips === 5) {
+  //   //   this.props.finishGame('cpu');
+  //   // }
+  //   // RANDOM
+  //   // if (!userTurn) {
+  //   //   let availableCell = false;
+  //   //   while (!availableCell) {
+  //   //     const randomCell = _.sample(userCells);
+  //   //     if (randomCell.condition === null) {
+  //   //       this.props.attackShip(userTurn, randomCell, userCells, userShips);
+  //   //       availableCell = true;
+  //   //     }
+  //   //   }
+  //   // }
+  //   // if (!userTurn) {
+  //   //   const availableUserCells = this.props.userCells.filter(
+  //   //     cell => cell.condition === null
+  //   //   );
+  //   //   let lastImpactCondition = null;
+  //   //   let lastImpact;
+  //   //   if (latestCpuImpacts.length > 0) {
+  //   //     lastImpact = _.last(latestCpuImpacts);
+  //   //     lastImpactCondition = lastImpact.condition;
+  //   //   }
+  //   //   // if (this.props.target) {
+  //   //   // }
+  //   //   if (this.props.strategy === 'random') {
+  //   //     console.log(this.props.latestCpuImpacts);
+  //   //     if (lastImpactCondition === 'damaged') {
+  //   //       this.props.changeGameMode('strategy', lastImpact);
+  //   //     } else {
+  //   //       const randomCell = _.sample(availableUserCells);
+  //   //       this.props.attackShip(userTurn, randomCell, userCells, userShips);
+  //   //     }
+  //   //   }
+  //   //   if (this.props.strategy === 'strategy') {
+  //   //     let directionToApply = this.props.lastDirection;
+  //   //     const possibleDirections = getPossibleDirections(
+  //   //       availableUserCells,
+  //   //       this.props.target
+  //   //     );
+  //   //     if (lastImpactCondition === 'water') {
+  //   //       possibleDirections.filter(
+  //   //         direction => direction !== this.props.lastDirection
+  //   //       );
+  //   //       directionToApply = _.sample(possibleDirections);
+  //   //     }
+  //   //     const nextImpact = calculateNextImpact(
+  //   //       this.props.target,
+  //   //       lastImpact,
+  //   //       possibleDirections,
+  //   //       directionToApply
+  //   //     );
+  //   //     this.props.attackShip(userTurn, nextImpact, userCells, userShips);
+  //   //   }
+  //   // }
+  // }
 
   handleSurrender = () => {
     this.props.surrender();
@@ -147,6 +166,14 @@ class DashBoard extends Component {
   render() {
     const { name, validForm } = this.state;
     const { playerName, userTurn, cpuCells, cpuShips, winner } = this.props;
+
+    if (this.props.cpuDestroyedShips === 5) {
+      this.props.finishGame('user');
+    }
+
+    if (this.props.userDestroyedShips === 5) {
+      this.props.finishGame('cpu');
+    }
 
     const handleClickCpuBoard = (xCoordinate, yCoordinate) => {
       if (userTurn) {
@@ -191,6 +218,60 @@ class DashBoard extends Component {
       return <ShipSelection playerName={playerName} />;
     };
 
+    if (!userTurn) {
+      console.log(this.props.latestCpuImpacts);
+      const availableUserCells = this.props.userCells.filter(
+        cell => cell.condition === null
+      );
+      let lastImpactCondition = null;
+      let lastImpact;
+      if (this.props.latestCpuImpacts.length > 0) {
+        lastImpact = _.last(this.props.latestCpuImpacts);
+        lastImpactCondition = lastImpact.condition;
+      }
+      if (this.props.target && this.props.target.condition === 'destroyed') {
+        this.props.changeGameMode('random', null);
+      }
+      if (this.props.strategy === 'random') {
+        if (lastImpactCondition === 'damaged') {
+          this.props.changeGameMode('strategy', lastImpact);
+        } else {
+          const randomCell = _.sample(availableUserCells);
+          this.props.attackShip(
+            userTurn,
+            randomCell,
+            this.props.userCells,
+            this.props.userShips
+          );
+        }
+      }
+      if (this.props.strategy === 'strategy') {
+        let directionToApply = this.props.lastDirection;
+        const possibleDirections = getPossibleDirections(
+          availableUserCells,
+          this.props.target
+        );
+        if (lastImpactCondition === 'water') {
+          possibleDirections.filter(
+            direction => direction !== this.props.lastDirection
+          );
+          directionToApply = _.sample(possibleDirections);
+        }
+        const nextImpact = calculateNextImpact(
+          this.props.target,
+          lastImpact,
+          possibleDirections,
+          directionToApply
+        );
+        this.props.attackShip(
+          userTurn,
+          nextImpact,
+          this.props.userCells,
+          this.props.userShips
+        );
+      }
+    }
+
     return (
       <React.Fragment>
         <div className="row">
@@ -230,11 +311,23 @@ const mapStateToProps = state => {
     cpuShips: state.boardReducer.cpuShips,
     userTurn: state.gameReducer.userTurn,
     winner: state.gameReducer.winner,
-    latestCpuImpacts: state.boardReducer.latestCpuImpacts
+    latestCpuImpacts: state.boardReducer.latestCpuImpacts,
+    strategy: state.boardReducer.strategy,
+    lastDirection: state.boardReducer.lastDirection,
+    changedDirection: state.boardReducer.changedDirection,
+    target: state.boardReducer.target
   };
 };
 
 export default connect(
   mapStateToProps,
-  { startGame, attackShip, finishGame, surrender }
+  {
+    startGame,
+    attackShip,
+    finishGame,
+    surrender,
+    changeStrategy,
+    changeDirection,
+    changeGameMode
+  }
 )(DashBoard);
