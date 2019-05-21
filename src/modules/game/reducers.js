@@ -31,7 +31,8 @@ const gameReducer = (state = initialState, action) => {
     case types.FINISH_GAME:
       return {
         ...state,
-        winner: action.payload.winner
+        winner: action.payload.winner,
+        usertTurn: true
       };
 
     case types.SURRENDER:
