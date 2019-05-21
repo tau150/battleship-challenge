@@ -41,12 +41,13 @@ const StyledDiv = styled.div`
 const StyledP = styled.p`
   font-size: 1.4rem;
   color: var(--secondary);
-  margin-left: 60px;
+  margin-left: 0;
   padding: 0;
 
   @media (min-width: 992px) {
     font-size: 1.6rem;
     margin-left: 80px;
+    align-self: flex-start;
   }
   &.cpu-name {
     margin-left: 0;
@@ -67,76 +68,6 @@ class DashBoard extends Component {
     validForm: true
   };
 
-  // componentDidUpdate() {
-  //   // const {
-  //   //   userTurn,
-  //   //   userCells,
-  //   //   userShips,
-  //   //   latestCpuImpacts,
-  //   //   cpuDestroyedShips,
-  //   //   userDestroyedShips
-  //   // } = this.props;
-  //   // if (cpuDestroyedShips === 5) {
-  //   //   this.props.finishGame('user');
-  //   // }
-  //   // if (userDestroyedShips === 5) {
-  //   //   this.props.finishGame('cpu');
-  //   // }
-  //   // RANDOM
-  //   // if (!userTurn) {
-  //   //   let availableCell = false;
-  //   //   while (!availableCell) {
-  //   //     const randomCell = _.sample(userCells);
-  //   //     if (randomCell.condition === null) {
-  //   //       this.props.attackShip(userTurn, randomCell, userCells, userShips);
-  //   //       availableCell = true;
-  //   //     }
-  //   //   }
-  //   // }
-  //   // if (!userTurn) {
-  //   //   const availableUserCells = this.props.userCells.filter(
-  //   //     cell => cell.condition === null
-  //   //   );
-  //   //   let lastImpactCondition = null;
-  //   //   let lastImpact;
-  //   //   if (latestCpuImpacts.length > 0) {
-  //   //     lastImpact = _.last(latestCpuImpacts);
-  //   //     lastImpactCondition = lastImpact.condition;
-  //   //   }
-  //   //   // if (this.props.target) {
-  //   //   // }
-  //   //   if (this.props.strategy === 'random') {
-  //   //     console.log(this.props.latestCpuImpacts);
-  //   //     if (lastImpactCondition === 'damaged') {
-  //   //       this.props.changeGameMode('strategy', lastImpact);
-  //   //     } else {
-  //   //       const randomCell = _.sample(availableUserCells);
-  //   //       this.props.attackShip(userTurn, randomCell, userCells, userShips);
-  //   //     }
-  //   //   }
-  //   //   if (this.props.strategy === 'strategy') {
-  //   //     let directionToApply = this.props.lastDirection;
-  //   //     const possibleDirections = getPossibleDirections(
-  //   //       availableUserCells,
-  //   //       this.props.target
-  //   //     );
-  //   //     if (lastImpactCondition === 'water') {
-  //   //       possibleDirections.filter(
-  //   //         direction => direction !== this.props.lastDirection
-  //   //       );
-  //   //       directionToApply = _.sample(possibleDirections);
-  //   //     }
-  //   //     const nextImpact = calculateNextImpact(
-  //   //       this.props.target,
-  //   //       lastImpact,
-  //   //       possibleDirections,
-  //   //       directionToApply
-  //   //     );
-  //   //     this.props.attackShip(userTurn, nextImpact, userCells, userShips);
-  //   //   }
-  //   // }
-  // }
-
   handleSurrender = () => {
     this.props.surrender();
   };
@@ -153,10 +84,6 @@ class DashBoard extends Component {
       this.props.startGame(this.state.name);
     }
   };
-
-  // handleRestartGame = () => {
-  //   this.props.restartGame();
-  // };
 
   render() {
     const { name, validForm } = this.state;
@@ -214,7 +141,7 @@ class DashBoard extends Component {
       if (this.props.stage === 'battle') {
         return (
           <StyledDiv>
-            <StyledP className="align-self-start cpu-name">CPU</StyledP>
+            <StyledP className="cpu-name">CPU</StyledP>
             <Board owner="cpu" handleClickCpuBoard={handleClickCpuBoard} />
             {this.props.stage === 'battle' ? (
               <StateFooter
@@ -266,8 +193,6 @@ class DashBoard extends Component {
         if (damagedShips.length > 0) {
           const randomDamagedShip = _.sample(damagedShips);
           resetedTarget = randomDamagedShip;
-          console.log(damagedShips);
-          console.log('ENTROO ACA', resetedTarget);
           this.props.changeStrategy('strategy', randomDamagedShip, true);
         } else {
           this.props.changeStrategy('random', null, true, false);
@@ -335,7 +260,6 @@ class DashBoard extends Component {
         }
 
         if (possibleDirectionsForTarget.length === 0) {
-          console.log('me quede sin direccion');
           this.props.changeStrategy('random', null, true);
         }
 
@@ -374,9 +298,11 @@ class DashBoard extends Component {
             winner={winner === 'user' ? 'You' : 'Machine'}
           />
         ) : (
-          <StyledGeneralContainer className="row mt-2">
+          <StyledGeneralContainer className="row mt-1">
             <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center">
-              <StyledP className="align-self-start">{playerName}</StyledP>
+              <StyledP>
+                {this.props.stage === 'battle' ? playerName : ''}
+              </StyledP>
               <Board owner="user" />
             </div>
             <div className="col-12 col-lg-6">{renderRightSideContent()}</div>

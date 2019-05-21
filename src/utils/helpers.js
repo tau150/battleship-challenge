@@ -190,7 +190,7 @@ export const initCpu = () => {
       let isPossibleMatch = false;
 
       coordinatesAvailableCells.map(cell => {
-        cellsToFill.map(cellToFill => {
+        return cellsToFill.map(cellToFill => {
           if (
             cell.xCoordinate === cellToFill.xCoordinate &&
             cell.yCoordinate === cellToFill.yCoordinate
@@ -328,11 +328,6 @@ export const calculateNextImpact = (
   } else {
     initialPoint = target;
     direction = _.sample(possibleDirections);
-
-    if (!direction) {
-      console.log('no hay direccio');
-      debugger;
-    }
   }
 
   if (direction === 'left') {
@@ -361,12 +356,6 @@ export const calculateNextImpact = (
       xCoordinate: initialPoint.xCoordinate - 1,
       yCoordinate: initialPoint.yCoordinate
     };
-  }
-
-  if (!nextImpact || !direction) {
-    console.log('no tengo');
-
-    debugger;
   }
 
   nextImpact.direction = direction;
@@ -411,11 +400,6 @@ export const getPossibleDirections = (availableUserCells, lastImpact) => {
   }
   if (lastImpact.yCoordinate < 9 && rightCell) {
     possibleDirections.push('right');
-  }
-
-  if (possibleDirections.length === 0) {
-    console.log('no tngo calculadas');
-    debugger;
   }
 
   return possibleDirections;
