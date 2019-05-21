@@ -66,12 +66,14 @@ const initialState = {
   userDestroyedShips: 0,
   cpuDestroyedShips: 0,
   latestCpuImpacts: [],
+  latestDirections: [],
   strategy: 'random',
   possibleDirections: null,
   lastDirection: null,
-  changedDirection: false,
   target: null,
-  lastImpact: null
+  possibleDirectionsForTarget: null,
+  requireTargetReconfig: false,
+  usedTargets: []
 };
 
 const boardReducer = (state = initialState, action) => {
@@ -104,7 +106,8 @@ const boardReducer = (state = initialState, action) => {
         cpuShips: action.payload.cpuShips,
         cpuCells: action.payload.cpuCells,
         cpuDestroyedShips:
-          state.cpuDestroyedShips + action.payload.destroyedShips
+          state.cpuDestroyedShips + action.payload.destroyedShips,
+        userTurn: false
       };
 
     case types.CPU_ATTACK_SHIP:
@@ -118,33 +121,39 @@ const boardReducer = (state = initialState, action) => {
         ],
         userDestroyedShips:
           state.userDestroyedShips + action.payload.destroyedShips,
-        lastDirection: action.payload.lastDirection
-        // strategy:
-        //   action.payload.attackedCell.condition === 'destroyed'
-        //     ? 'random'
-        //     : state.strategy
+        lastDirection: action.payload.lastDirection,
+        latestDirections: [
+          ...state.latestDirections,
+          action.payload.lastDirection
+        ],
+        possibleDirectionsForTarget: action.payload.possibleDirectionsForTarget,
+        requireTargetReconfig: action.payload.requireTargetReconfig,
+        resetTarget: action.payload.resetTarget
       };
 
     case types.CHANGE_STRATEGY:
       return {
         ...state,
-        strategy: action.payload.strategy
-        // target: action.payload.target
+        strategy: action.payload.strategy,
+        target: action.payload.target,
+        requireTargetReconfig: action.payload.requireTargetReconfig
       };
 
-    case types.SET_TARGET:
-      return {
-        ...state,
-        target: action.payload.target
-      };
+    // case types.SET_TARGET:
+    //   console.log('cambio target reducer', action.payload.target);
 
-    case types.CHANGE_DIRECTION:
-      return {
-        ...state,
-        lastDirection: action.payload.direction,
-        changedDirection: true,
-        possibleDirections: action.payload.possibleDirections
-      };
+    //   return {
+    //     ...state,
+    //     target: action.payload.target
+    //   };
+
+    // case types.CHANGE_DIRECTION:
+    //   return {
+    //     ...state,
+    //     lastDirection: action.payload.direction,
+    //     changedDirection: true,
+    //     possibleDirections: action.payload.possibleDirections
+    //   };
 
     default:
       return state;

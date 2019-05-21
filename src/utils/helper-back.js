@@ -246,94 +246,82 @@ export const calculateNextImpact = (
   target,
   lastImpact,
   possibleDirections,
-  directionToApply,
-  latestCpuImpacts,
-  latestDirections,
-  requireTargetReconfig
+  directionToApply
 ) => {
   let nextImpact;
-  let initialPoint;
-  let direction = directionToApply;
+  let direction;
 
-  const prevImpact = latestCpuImpacts[latestCpuImpacts.length - 2];
-  const prevDirection = latestDirections[latestDirections.length - 2];
-
-  if (lastImpact.condition === 'damaged' && !requireTargetReconfig) {
-    if (
-      lastImpact.xCoordinate === target.xCoordinate &&
-      lastImpact.yCoordinate === target.yCoordinate
-    ) {
-      initialPoint = target;
-      direction = _.sample(possibleDirections);
-    } else if (possibleDirections.includes(directionToApply)) {
-      initialPoint = lastImpact;
-      direction = directionToApply;
-    } else {
-      initialPoint = target;
-      switch (directionToApply) {
-        case 'right':
-          direction = 'left';
-          break;
-
-        case 'left':
-          direction = 'right';
-          break;
-
-        case 'up':
-          direction = 'down';
-          break;
-
-        case 'down':
-          direction = 'up';
-          break;
-
-        default:
-          direction = directionToApply;
-      }
-    }
-  } else if (
-    lastImpact.condition === 'water' &&
-    prevImpact.condition === 'damaged'
-  ) {
-    initialPoint = target;
-
-    let directionToEvaluate;
-
-    switch (prevDirection) {
-      case 'right':
-        directionToEvaluate = 'left';
-        break;
-
-      case 'left':
-        directionToEvaluate = 'right';
-        break;
-
-      case 'up':
-        directionToEvaluate = 'down';
-        break;
-
-      case 'down':
-        directionToEvaluate = 'up';
-        break;
-
-      default:
-        directionToEvaluate = prevDirection;
-    }
-
-    if (possibleDirections.includes(directionToEvaluate)) {
-      direction = directionToEvaluate;
-    } else {
-      direction = _.sample(possibleDirections);
-    }
-  } else {
-    initialPoint = target;
+  if (!directionToApply) {
     direction = _.sample(possibleDirections);
-
-    if (!direction) {
-      console.log('no hay direccio');
-      debugger;
-    }
+  } else {
+    direction = directionToApply;
   }
+
+  // if(lastImpact){
+
+  // }
+  const initialPoint = lastImpact || target;
+
+  // if (direction === 'left') {
+  //   nextImpact = {
+  //     xCoordinate: initialPoint.xCoordinate,
+  //     yCoordinate: initialPoint.yCoordinate - 1
+  //   };
+  // }
+
+  // if (direction === 'right') {
+  //   nextImpact = {
+  //     xCoordinate: initialPoint.xCoordinate,
+  //     yCoordinate: initialPoint.yCoordinate + 1
+  //   };
+  // }
+
+  // if (direction === 'down') {
+  //   nextImpact = {
+  //     xCoordinate: initialPoint.xCoordinate + 1,
+  //     yCoordinate: initialPoint.yCoordinate
+  //   };
+  // }
+
+  // if (direction === 'up') {
+  //   nextImpact = {
+  //     xCoordinate: initialPoint.xCoordinate - 1,
+  //     yCoordinate: initialPoint.yCoordinate
+  //   };
+  // }
+
+  // nextImpact.direction = direction;
+
+  // let initialPoint;
+
+  // if (directionToApply) {
+  //   console.log(directionToApply);
+  //   const orientation =
+  //     directionToApply === 'right' || directionToApply === 'left'
+  //       ? 'horizontal'
+  //       : 'vertical';
+
+  //   console.log(orientation);
+
+  //   if (lastImpact) {
+  //     let isValid;
+  //     if (orientation === 'horizontal') {
+  //       isValid =
+  //         lastImpact.xCoordinate - 1 >= 0 && lastImpact.xCoordinate + 1 <= 9;
+  //     } else {
+  //       isValid =
+  //         lastImpact.yCoordinate - 1 >= 0 && lastImpact.yCoordinate + 1 <= 9;
+  //     }
+
+  //     console.log(isValid);
+
+  //     initialPoint = isValid && lastImpact ? lastImpact : target;
+  //     direction = isValid ? directionToApply : _.sample(possibleDirections);
+  //   }
+  // } else {
+  //   initialPoint = target;
+  //   direction = _.sample(possibleDirections);
+  // }
 
   if (direction === 'left') {
     nextImpact = {
@@ -361,12 +349,6 @@ export const calculateNextImpact = (
       xCoordinate: initialPoint.xCoordinate - 1,
       yCoordinate: initialPoint.yCoordinate
     };
-  }
-
-  if (!nextImpact || !direction) {
-    console.log('no tengo');
-
-    debugger;
   }
 
   nextImpact.direction = direction;
@@ -413,10 +395,55 @@ export const getPossibleDirections = (availableUserCells, lastImpact) => {
     possibleDirections.push('right');
   }
 
-  if (possibleDirections.length === 0) {
-    console.log('no tngo calculadas');
-    debugger;
-  }
-
   return possibleDirections;
 };
+
+// export const calculateNextImpact = (
+//   target,
+//   lastImpact,
+//   possibleDirections,
+//   directionToApply
+// ) => {
+//   let nextImpact;
+//   let direction;
+
+//   if (!directionToApply) {
+//     direction = _.sample(possibleDirections);
+//   } else {
+//     direction = directionToApply;
+//   }
+
+//   const initialPoint = lastImpact || target;
+
+//   if (direction === 'left') {
+//     nextImpact = {
+//       xCoordinate: initialPoint.xCoordinate,
+//       yCoordinate: initialPoint.yCoordinate - 1
+//     };
+//   }
+
+//   if (direction === 'right') {
+//     nextImpact = {
+//       xCoordinate: initialPoint.xCoordinate,
+//       yCoordinate: initialPoint.yCoordinate + 1
+//     };
+//   }
+
+//   if (direction === 'down') {
+//     nextImpact = {
+//       xCoordinate: initialPoint.xCoordinate + 1,
+//       yCoordinate: initialPoint.yCoordinate
+//     };
+//   }
+
+//   if (direction === 'up') {
+//     nextImpact = {
+//       xCoordinate: initialPoint.xCoordinate - 1,
+//       yCoordinate: initialPoint.yCoordinate
+//     };
+//   }
+
+//   nextImpact.direction = direction;
+//   console.log(nextImpact);
+//   return nextImpact;
+// };

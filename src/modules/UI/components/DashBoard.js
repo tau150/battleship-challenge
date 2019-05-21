@@ -6,13 +6,7 @@ import Board from '../../board/components/Board';
 import PlayerForm from '../../board/components/PlayerForm';
 import ShipSelection from '../../board/components/ShipsSelection';
 import { startGame, finishGame, surrender } from '../../game/actions';
-import {
-  attackShip,
-  changeStrategy,
-  changeDirection,
-  changeGameMode,
-  setTarget
-} from '../../board/actions';
+import { attackShip, changeStrategy, setTarget } from '../../board/actions';
 import {
   calculateNextImpact,
   getPossibleDirections
@@ -184,7 +178,25 @@ class DashBoard extends Component {
         );
 
         if (cellClicked.condition === null) {
-          this.props.attackShip(userTurn, cellClicked, cpuCells, cpuShips);
+          const cpuData = {
+            userTurn: this.props.userTurn,
+            userCells: this.props.userCells,
+            userShips: this.props.userShips,
+            target: this.props.target,
+            possibleDirectionsForTarget: this.props.possibleDirectionsForTarget,
+            lastDirection: this.props.lastDirection,
+            latestCpuImpacts: this.props.latestCpuImpacts,
+            strategy: this.props.strategy,
+            requireTargetReconfig: this.props.requireTargetReconfig
+          };
+
+          this.props.attackShip(
+            userTurn,
+            cellClicked,
+            cpuCells,
+            cpuShips,
+            cpuData
+          );
         }
       }
     };
@@ -224,60 +236,129 @@ class DashBoard extends Component {
         cell => cell.condition === null
       );
 
-      let lastImpactCondition = null;
       let lastImpact;
+
       if (this.props.latestCpuImpacts.length > 0) {
         lastImpact = _.last(this.props.latestCpuImpacts);
-        lastImpactCondition = lastImpact.condition;
       }
-      if (this.props.target && this.props.target.condition === 'destroyed') {
-        this.props.changeGameMode('random', null);
+
+      let destroyedCell;
+
+      if (lastImpact) {
+        destroyedCell = this.props.userCells.find(
+          cell =>
+            cell.xCoordinate === lastImpact.xCoordinate &&
+            cell.yCoordinate === lastImpact.yCoordinate
+        );
+      }
+      let resetedTarget;
+      // check updated value to evaluate if a ship was destroyed
+      if (
+        this.props.strategy === 'strategy' &&
+        destroyedCell &&
+        destroyedCell.condition === 'destroyed' &&
+        !this.props.requireTargetReconfig
+      ) {
+        const damagedShips = this.props.userCells.filter(
+          cell => cell.condition === 'damaged'
+        );
+
+        if (damagedShips.length > 0) {
+          const randomDamagedShip = _.sample(damagedShips);
+          resetedTarget = randomDamagedShip;
+          console.log(damagedShips);
+          console.log('ENTROO ACA', resetedTarget);
+          this.props.changeStrategy('strategy', randomDamagedShip, true);
+        } else {
+          this.props.changeStrategy('random', null, true, false);
+        }
       }
 
       if (this.props.strategy === 'random') {
-        if (lastImpactCondition === 'damaged') {
-          this.props.changeGameMode('strategy', lastImpact);
+        if (this.props.requireTargetReconfig) {
+          const randomCell = _.sample(availableUserCells);
+          this.props.attackShip(
+            userTurn,
+            randomCell,
+            this.props.userCells,
+            this.props.userShips,
+            false
+          );
+        } else if (lastImpact && lastImpact.condition === 'damaged') {
+          this.props.changeStrategy('strategy', lastImpact, false);
         } else {
           const randomCell = _.sample(availableUserCells);
           this.props.attackShip(
             userTurn,
             randomCell,
             this.props.userCells,
-            this.props.userShips
+            this.props.userShips,
+            false
           );
         }
       }
-      if (this.props.strategy === 'strategy') {
-        let directionToApply = this.props.lastDirection; // null
-        const possibleDirections = getPossibleDirections(
-          availableUserCells,
-          this.props.target
+
+      if (
+        (this.props.strategy === 'strategy' &&
+          destroyedCell.condition !== 'destroyed') ||
+        (this.props.strategy === 'strategy' && resetedTarget)
+      ) {
+        let { possibleDirectionsForTarget } = this.props;
+        const { lastDirection } = this.props;
+        const directionToApply = lastDirection;
+
+        const updatedAvailableUserCells = this.props.userCells.filter(
+          cell => cell.condition === null
         );
 
-        if (lastImpactCondition === 'water') {
-          lastImpact = null;
-          possibleDirections.filter(
-            direction => direction !== this.props.lastDirection
+        const target = resetedTarget || this.props.target;
+
+        if (lastImpact.condition === 'water') {
+          possibleDirectionsForTarget = getPossibleDirections(
+            updatedAvailableUserCells,
+            this.props.target
           );
-          directionToApply = _.sample(possibleDirections);
+        } else if (resetedTarget) {
+          possibleDirectionsForTarget = getPossibleDirections(
+            updatedAvailableUserCells,
+            resetedTarget
+          );
+        } else {
+          const lastImpactTocalculate = this.props.requireTargetReconfig
+            ? target
+            : lastImpact;
+
+          possibleDirectionsForTarget = getPossibleDirections(
+            updatedAvailableUserCells,
+            lastImpactTocalculate
+          );
+        }
+
+        if (possibleDirectionsForTarget.length === 0) {
+          console.log('me quede sin direccion');
+          this.props.changeStrategy('random', null, true);
         }
 
         const nextImpact = calculateNextImpact(
-          this.props.target,
+          target,
           lastImpact,
-          possibleDirections,
-          directionToApply
+          possibleDirectionsForTarget,
+          directionToApply,
+          this.props.latestCpuImpacts,
+          this.props.latestDirections,
+          !!resetedTarget
         );
+
         this.props.attackShip(
           userTurn,
           nextImpact,
           this.props.userCells,
-          this.props.userShips
+          this.props.userShips,
+          possibleDirectionsForTarget,
+          false
         );
       }
     }
-
-    console.log('user turn', this.props.latestCpuImpacts);
 
     return (
       <React.Fragment>
@@ -323,7 +404,12 @@ const mapStateToProps = state => {
     lastDirection: state.boardReducer.lastDirection,
     changedDirection: state.boardReducer.changedDirection,
     target: state.boardReducer.target,
-    lastImpact: state.boardReducer.lastImpact
+    lastImpact: state.boardReducer.lastImpact,
+    possibleDirectionsForTarget: state.boardReducer.possibleDirectionsForTarget,
+    requireTargetReconfig: state.boardReducer.requireTargetReconfig,
+    resetTarget: state.boardReducer.resetTarget,
+    latestDirections: state.boardReducer.latestDirections,
+    usedTargets: state.boardReducer.usedTargets
   };
 };
 
@@ -335,8 +421,6 @@ export default connect(
     finishGame,
     surrender,
     changeStrategy,
-    changeDirection,
-    changeGameMode,
     setTarget
   }
 )(DashBoard);
