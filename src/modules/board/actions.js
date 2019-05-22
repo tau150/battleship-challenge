@@ -242,6 +242,7 @@ export const attackShip = (
 
     if (!userTurn) {
       setTimeout(() => {
+        dispatch(changeTurn());
         dispatch(
           cpuAttackShip(
             cell,
@@ -251,8 +252,7 @@ export const attackShip = (
             requireTargetReconfig
           )
         );
-        dispatch(changeTurn());
-      }, 200);
+      }, 600);
     }
   };
 };

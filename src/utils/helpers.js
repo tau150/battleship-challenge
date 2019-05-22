@@ -206,7 +206,6 @@ export const initCpu = () => {
           );
           if (isFill) {
             c.isAvailable = false;
-            c.condition = 'water';
           }
           return c;
         });
