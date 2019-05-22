@@ -1,7 +1,7 @@
 import * as types from '../../constants/actionTypes';
 
 const initialState = {
-  playerName: 'sa',
+  playerName: '',
   stage: 'starting',
   userTurn: true,
   winner: ''
