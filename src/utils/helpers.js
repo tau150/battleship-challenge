@@ -28,6 +28,7 @@ export const makeCoordinatesObject = (
   yCoordinate
 ) => {
   const cellsToFill = [];
+
   if (direction === 'horizontal') {
     if (Number(yCoordinate) + extension <= 10) {
       for (let i = 0; i < extension; i += 1) {
@@ -47,7 +48,6 @@ export const makeCoordinatesObject = (
       }
     }
   }
-
   return cellsToFill;
 };
 
@@ -144,20 +144,20 @@ export const initCpu = () => {
       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
     }
   ];
-  let cells = generateMatrix();
+  const cells = generateMatrix();
   ships.map(ship => {
     const { direction, type } = ship;
     const availableCells = cells.filter(cell => cell.isAvailable);
     let positionedShip = false;
 
-    const coordinatesAvailableCells = availableCells.map(cell =>
+    let coordinatesAvailableCells = availableCells.map(cell =>
       _.pick(cell, ['xCoordinate', 'yCoordinate'])
     );
 
     while (!positionedShip) {
-      let cellsToFill;
+      let cellsToFill = [];
 
-      while (!cellsToFill) {
+      while (cellsToFill.length === 0) {
         const xCoordinate = Math.floor(Math.random() * (9 - 0 + 1)) + 0;
         const yCoordinate = Math.floor(Math.random() * (9 - 0 + 1)) + 0;
 
@@ -187,20 +187,13 @@ export const initCpu = () => {
         }
       }
 
-      let isPossibleMatch = false;
+      const intersection = _.intersectionWith(
+        coordinatesAvailableCells,
+        cellsToFill,
+        _.isEqual
+      );
 
-      coordinatesAvailableCells.map(cell => {
-        return cellsToFill.map(cellToFill => {
-          if (
-            cell.xCoordinate === cellToFill.xCoordinate &&
-            cell.yCoordinate === cellToFill.yCoordinate
-          ) {
-            isPossibleMatch = true;
-          }
-        });
-      });
-
-      if (isPossibleMatch) {
+      if (intersection.length === cellsToFill.length) {
         const shipWithPostion = ship;
         shipWithPostion.position = cellsToFill;
 
@@ -213,13 +206,14 @@ export const initCpu = () => {
           );
           if (isFill) {
             c.isAvailable = false;
+            c.condition = 'water';
           }
           return c;
         });
 
         positionedShip = true;
 
-        cells = newCells;
+        coordinatesAvailableCells = newCells;
         return shipWithPostion;
       }
     }
@@ -230,6 +224,174 @@ export const initCpu = () => {
     cells
   };
 };
+
+// export const initCpu = () => {
+//   console.log('iniciando cpu');
+
+//   const shipDirection = ['horizontal', 'vertical'];
+
+//   const ships = [
+//     {
+//       type: 'Carrier',
+//       id: Math.random()
+//         .toString(36)
+//         .substr(2, 9),
+//       position: null,
+//       hits: [],
+//       condition: 'new',
+//       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
+//     },
+//     {
+//       type: 'Cruisers',
+//       id: Math.random()
+//         .toString(36)
+//         .substr(2, 9),
+//       position: null,
+//       hits: [],
+//       condition: 'new',
+//       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
+//     },
+//     {
+//       type: 'Cruisers',
+//       id: Math.random()
+//         .toString(36)
+//         .substr(2, 9),
+//       position: null,
+//       condition: 'new',
+//       hits: [],
+//       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
+//     },
+//     {
+//       type: 'Cruisers',
+//       id: Math.random()
+//         .toString(36)
+//         .substr(2, 9),
+//       position: null,
+//       hits: [],
+//       condition: 'new',
+//       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
+//     },
+//     {
+//       type: 'Submarine',
+//       id: Math.random()
+//         .toString(36)
+//         .substr(2, 9),
+//       position: null,
+//       hits: [],
+//       condition: 'new',
+//       direction: shipDirection[Math.floor(Math.random() * shipDirection.length)]
+//     }
+//   ];
+//   const cells = generateMatrix();
+
+//   const availableCells = cells.filter(cell => cell.isAvailable);
+
+//   let coordinatesAvailableCells = availableCells.map(cell =>
+//     _.pick(cell, ['xCoordinate', 'yCoordinate'])
+//   );
+
+//   ships.map(ship => {
+//     const { direction, type } = ship;
+//     let positionedShip = false;
+
+//     while (!positionedShip) {
+//       let cellsToFill;
+
+//       while (!cellsToFill) {
+//         // const xCoordinate = Math.floor(Math.random() * (9 - 0 + 1)) + 0;
+//         // const yCoordinate = Math.floor(Math.random() * (9 - 0 + 1)) + 0;
+
+//         const { xCoordinate, yCoordinate } = _.sample(
+//           coordinatesAvailableCells
+//         );
+
+//         if (type === 'Carrier') {
+//           cellsToFill = makeCoordinatesObject(
+//             4,
+//             direction,
+//             xCoordinate,
+//             yCoordinate
+//           );
+//         }
+//         if (type === 'Cruisers') {
+//           cellsToFill = makeCoordinatesObject(
+//             3,
+//             direction,
+//             xCoordinate,
+//             yCoordinate
+//           );
+//         }
+//         if (type === 'Submarine') {
+//           cellsToFill = makeCoordinatesObject(
+//             2,
+//             direction,
+//             xCoordinate,
+//             yCoordinate
+//           );
+//         }
+
+//         // console.log(cellsToFill);
+//         // debugger;
+//       }
+
+//       const isPossibleMatch = false;
+
+//       // isPossibleMatch = coordinatesAvailableCells.filter(cell => {
+//       //   return cellsToFill.filter(
+//       //     cellTofill =>
+//       //       cellTofill.xCoordinate === cell.xCoordinate &&
+//       //       cellTofill.yCoordinate === cell.yCoordinate
+//       //   );
+//       // });
+
+//       // isPossibleMatch = coordinatesAvailableCells.map(cell => {
+//       //   return cellsToFill.map(cellToFill => {
+//       //     if (
+//       //       cell.xCoordinate === cellToFill.xCoordinate &&
+//       //       cell.yCoordinate === cellToFill.yCoordinate
+//       //     ) {
+//       //       return true;
+//       //     }
+//       //       return false;
+
+//       //   });
+//       // });
+
+//       console.log(isPossibleMatch);
+//       debugger;
+
+//       if (isPossibleMatch) {
+//         const shipWithPostion = ship;
+//         shipWithPostion.position = cellsToFill;
+
+//         const newCells = cells.map(cell => {
+//           const c = cell;
+//           const isFill = cellsToFill.find(
+//             cellToFill =>
+//               cellToFill.xCoordinate === cell.xCoordinate &&
+//               cellToFill.yCoordinate === cell.yCoordinate
+//           );
+//           if (isFill) {
+//             c.isAvailable = false;
+//             c.condition = 'water';
+//           }
+//           return c;
+//         });
+
+//         positionedShip = true;
+
+//         coordinatesAvailableCells = newCells;
+//         return shipWithPostion;
+//       }
+//       console.log('no esta');
+//     }
+//   });
+
+//   return {
+//     ships,
+//     cells
+//   };
+// };
 
 export const getNextAvailableCellForImpact = (
   possibleImpact,

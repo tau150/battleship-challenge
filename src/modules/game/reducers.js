@@ -1,10 +1,10 @@
 import * as types from '../../constants/actionTypes';
 
 const initialState = {
-  playerName: '',
+  playerName: 'sa',
   stage: 'starting',
   userTurn: true,
-  winner: null
+  winner: ''
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -40,7 +40,6 @@ const gameReducer = (state = initialState, action) => {
         ...state,
         winner: 'cpu'
       };
-
     default:
       return state;
   }

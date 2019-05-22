@@ -139,22 +139,6 @@ const boardReducer = (state = initialState, action) => {
         requireTargetReconfig: action.payload.requireTargetReconfig
       };
 
-    // case types.SET_TARGET:
-    //   console.log('cambio target reducer', action.payload.target);
-
-    //   return {
-    //     ...state,
-    //     target: action.payload.target
-    //   };
-
-    // case types.CHANGE_DIRECTION:
-    //   return {
-    //     ...state,
-    //     lastDirection: action.payload.direction,
-    //     changedDirection: true,
-    //     possibleDirections: action.payload.possibleDirections
-    //   };
-
     default:
       return state;
   }

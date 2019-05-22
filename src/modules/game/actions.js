@@ -35,9 +35,3 @@ export const surrender = () => {
     type: types.SURRENDER
   };
 };
-
-// export const restartGame = () => {
-//   return {
-//     type: types.RESTART_GAME
-//   };
-// };

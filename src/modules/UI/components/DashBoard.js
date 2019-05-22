@@ -105,25 +105,7 @@ class DashBoard extends Component {
         );
 
         if (cellClicked.condition === null) {
-          const cpuData = {
-            userTurn: this.props.userTurn,
-            userCells: this.props.userCells,
-            userShips: this.props.userShips,
-            target: this.props.target,
-            possibleDirectionsForTarget: this.props.possibleDirectionsForTarget,
-            lastDirection: this.props.lastDirection,
-            latestCpuImpacts: this.props.latestCpuImpacts,
-            strategy: this.props.strategy,
-            requireTargetReconfig: this.props.requireTargetReconfig
-          };
-
-          this.props.attackShip(
-            userTurn,
-            cellClicked,
-            cpuCells,
-            cpuShips,
-            cpuData
-          );
+          this.props.attackShip(userTurn, cellClicked, cpuCells, cpuShips);
         }
       }
     };
@@ -293,10 +275,7 @@ class DashBoard extends Component {
         </div>
 
         {winner ? (
-          <WinnerBoard
-            handleRestartGame={this.handleRestartGame}
-            winner={winner === 'user' ? 'You' : 'Machine'}
-          />
+          <WinnerBoard winner={winner === 'user' ? 'You' : 'Machine'} />
         ) : (
           <StyledGeneralContainer className="row mt-1">
             <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center">
