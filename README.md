@@ -1,68 +1,74 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
 
-In the project directory, you can run:
+## Interview Challenge
 
-### `npm start`
+This project was a React Development Challenge for a job interview
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Main Goal
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Develop a simplified React version of the battleship game; player vs CPU.
 
-### `npm test`
+### GAME ELEMENTS AND CHARACTERISTICS
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- 10x10 board size
+- 1 carrier of 4 spaces
+- 3 cruisers of 3 spaces
+- 1 submarine of 2 spaces
+- Ships must be straight lines
+- Ships can be placed horizontally or vertically
 
-### `npm run build`
+### BASIC GAMEPLAY
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The game should have at least 3 screens with the following components and actions.
+All mockups are just for reference and can be improved.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## START SCREEN
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Place your ships on the board
+- Enter player name
+- Button with “Start game” label
 
-### `npm run eject`
+## GAME SCREEN
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Player and CPU boards
+- Game state (”Playing: Player name or CPU”)
+- Clicking on computer board, you launch your missiles
+- Launched missiles reference
+HIT –orange–, DESTROYED –red–, MISSED/WATER –light blue–
+- Attempt feedback (ship hit, ship destroyed, shot missed)
+- CPU missiles can’t be launched in random way (once the CPU hits a ship, the next
+shots must follow some strategy in order to sink the ship)
+- Surrender button to end the game manually
+- 
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## END GAME SCREEN
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- Game result: won, lost, surrendered
+- Restart button to go back to the Start screen
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### REQUIREMENTS
 
-## Learn More
+- You need to create a GitHub repository and send us the link
+so we can see the progress
+- Please, try to commit often and use clear and concise commit messages
+- The project must be bootstrapped with Create React App
+(https://github.com/facebook/create-react-app)
+- You must use Redux to manage the application state
+- Use Jest and Enzyme to test the application
+- Each component must have its own test file
+- Perform Snapshots testing
+- Every developed test should be relevant
+- Try to reach a good percentage of coverage
+- Include ESLint using Airbnb's ESLint Rules (eslint-config-airbnb)
+- Keep the use of third-party packages to a minimum
+- Try to use the latest versions of the packages that are included
+- Complex logic must be documented
+- Should work in the latest versions of all major browsers
+(Edge, Chrome, Firefox and Safari), both desktop and mobile
+- Code and comments must be in English
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+ 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
 
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
