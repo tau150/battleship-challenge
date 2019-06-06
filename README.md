@@ -28,6 +28,8 @@ All mockups are just for reference and can be improved.
 - Enter player name
 - Button with “Start game” label
 
+![Start Screen](https://i.ibb.co/k5mztJy/Captura-de-pantalla-2019-06-06-a-las-7-55-22.png)
+
 ## GAME SCREEN
 
 - Player and CPU boards
@@ -39,12 +41,16 @@ HIT –orange–, DESTROYED –red–, MISSED/WATER –light blue–
 - CPU missiles can’t be launched in random way (once the CPU hits a ship, the next
 shots must follow some strategy in order to sink the ship)
 - Surrender button to end the game manually
-- 
+
+![Game Screen](https://i.ibb.co/B4Wk0Rq/Captura-de-pantalla-2019-06-06-a-las-7-59-41.png)
+
 
 ## END GAME SCREEN
 
 - Game result: won, lost, surrendered
 - Restart button to go back to the Start screen
+
+![End Game Screen](https://i.ibb.co/k5mztJy/Captura-de-pantalla-2019-06-06-a-las-7-55-22.png)
 
 ### REQUIREMENTS
 
@@ -69,6 +75,14 @@ so we can see the progress
 
 
 
+### TODO
+
+- Tests
+- Restart button at end game screen
+
+### Live demo
+
+https://cranky-engelbart-6d8a3d.netlify.com/
  
 
 
